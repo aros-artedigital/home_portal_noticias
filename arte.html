@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Notícias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="shortcut icon" href="img/favicon-32x32.png" type="image/x-icon">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <style>
+        /* Reset CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilo Global */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            /*background: #ff0000;*/
+            background-image: linear-gradient(to left, rgb(99, 32, 133), rgb(166, 21, 244), rgb(99, 32, 133));
+            background-size: 500% 100%;
+            animation: degrade-animado 3s infinite alternate;
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        @keyframes degrade-animado {
+           
+            0%{
+                background-position-x: 0%;
+            }
+
+            100%{
+                background-position-x: 100%;
+            }
+
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 1rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffa500;
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .hero {
+            background: url('img/header_04.jpg') no-repeat center center/cover;
+            height: 50vh;
+            width: 100%;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 70px; /* Ajuste a altura da margem conforme necessário */
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            text-shadow: 10px 10px 20px #333;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            text-shadow: 10px 10px 20px #333;
+        }
+
+        .news-section {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .news-article {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .news-article img {
+            width: 100%;
+            height: auto;
+        }
+
+        .news-article h2 {
+            margin: 1rem 0;
+            line-height: 3.5vh;
+            font-size: 3.5vh;
+        }
+
+        .news-article p {
+            font-size: 2.5vh;
+        }
+
+        #expandButton {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+        }
+
+        #expandButton:hover {
+            background-color: #0056b3;
+            box-shadow: 0 8px 12px rgba(0, 86, 179, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .extraContent {
+            display: none;
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .sidebar .widget {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-inner img {
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-control {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-control {
+                font-size: 1.5rem;
+                padding: 5px;
+            }
+        }
+
+        .banner-ad {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .banner-ad img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .carousel {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            animation: slide 20s linear infinite;
+        }
+        .carousel-slide {
+            min-width: 250px;
+            height: 100px;
+            margin-right: 0px;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Responsive design for tablets */
+        @media (max-width: 768px) {
+            .carousel-slide {
+                min-width: 200px; /* Adjust the width for tablets */
+                margin-right: 15px;
+            }
+        }
+
+        /* Responsive design for mobile phones */
+        @media (max-width: 480px) {
+            .carousel-track {
+                animation: slideMobile 40s linear infinite;
+            }
+            .carousel-slide {
+                min-width: 100%; /* Full width for mobile devices */
+                margin-right: 0;
+            }
+
+            @keyframes slideMobile {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+        }
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            color: #fff;
+            background: #333;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            background: #ffa500;
+            transform: scale(1.1);
+        }
+
+        /* Botão Voltar ao Topo */
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: none;
+            z-index: 1000;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        #back-to-top:hover {
+            background: #ffa500;
+            transform: scale(1.1);
+        }
+
+        #back-to-top i {
+            font-size: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                display: none;
+                width: 100%;
+                height: 100vh;
+                background: #333;
+                position: absolute;
+                top: 0px;
+                left: 0;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+                font-size: 30px;
+                line-height: 60px;
+            }
+
+            .nav-links.active a:hover {
+                background-color: #cbcbcb;
+                padding: 10px 30px;
+                color: #333;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .burger.toggle {
+                display: none;
+            }
+
+            .logo {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .news-section {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .news-article {
+                margin: 0 auto;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .partners-section {
+                flex-direction: column;
+            }
+        }
+
+        .whatsapp-button {
+            position: fixed;
+            bottom: 65px;
+            right: 20px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+            z-index: 1000;
+        }
+
+        .whatsapp-button img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .whatsapp-button:hover {
+            animation: shake 0.3s;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1 data-aos="flip-up">Arte</h1>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="noticias.html">Noticias</a></li>
+                <li><a href="tecnologia.html">Tecnologia</a></li>
+                <li><a href="arte.html">Arte</a></li>
+                <li><a href="design.html">Design</a></li>
+            </ul>
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1 data-aos="fade-up">Bem Vindo!!!</h1>
+                <p data-aos="fade-up">Confira as últimas notícias e novidades.</p>
+            </div>
+        </section>
+
+        <section class="carousel">
+            <div id="carousel-inner" class="carousel-inner">
+                <img src="img/top_arte/topo_arte_01.jpg" alt="Carousel Image 1">
+                <img src="img/top_arte/topo_arte_02.jpg" alt="Carousel Image 2">
+                <img src="img/top_arte/topo_arte_03.jpg" alt="Carousel Image 3">
+                <img src="img/top_arte/topo_arte_04.jpg" alt="Carousel Image 4">
+                <img src="img/top_arte/topo_arte_05.jpg" alt="Carousel Image 5">
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
+                <button class="carousel-control next" onclick="nextSlide()">&#10095;</button>
+            </div>
+        </section>
+        <section class="news-section">
+            <div class="news-articles">
+                <article class="news-article">
+                    <img src="img/arte_01.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">O Impacto da Inteligência Artificial no Design Gráfico</h2>
+                    <p data-aos="fade-up">A inteligência artificial (IA) tem causado um impacto profundo no campo do design gráfico, revolucionando a maneira como designers criam e interagem com suas ferramentas...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A inteligência artificial (IA) tem causado um impacto profundo no campo do design gráfico, revolucionando a maneira como designers criam e interagem com suas ferramentas. Com o auxílio da IA, tarefas que antes exigiam horas de trabalho manual podem ser realizadas em minutos, permitindo que os profissionais se concentrem mais na criatividade e menos na execução técnica. Ferramentas baseadas em IA oferecem suporte na automatização de processos, como a criação de layouts, paletas de cores e até a geração de imagens, facilitando o desenvolvimento de projetos mais ágeis e eficientes.</p><br>
+
+                        <p>Um dos maiores benefícios da IA no design gráfico é a personalização em escala. Algoritmos de aprendizado de máquina conseguem analisar grandes volumes de dados e adaptar o design de acordo com as preferências e comportamentos dos usuários. Isso permite a criação de campanhas de marketing e conteúdo visual altamente segmentados, garantindo que cada peça de design seja relevante para seu público-alvo. Esse nível de personalização seria impossível de alcançar manualmente, mas com a IA, torna-se uma ferramenta poderosa para aumentar a eficácia e o engajamento das comunicações visuais.</p><br>
+
+                        <p>Outra inovação trazida pela IA é a capacidade de gerar designs autônomos. Plataformas de design assistido por inteligência artificial já conseguem criar logotipos, websites e outros elementos gráficos com base em descrições simples fornecidas pelos usuários. Essas ferramentas utilizam modelos predefinidos e padrões de design para gerar resultados profissionais em questão de segundos. Embora não substituam a criatividade humana, essas soluções democratizam o design, permitindo que pessoas sem formação técnica criem peças visuais de qualidade.</p><br>
+
+                        <p>Além disso, a IA tem o potencial de aprimorar o processo criativo dos designers, funcionando como uma assistente inteligente. Ferramentas como a detecção automática de erros, sugestões de ajuste de estilo e otimização de desempenho visual são alguns exemplos de como a IA pode atuar ao lado do designer, oferecendo insights e recomendações baseadas em dados. Ao otimizar decisões sobre tipografia, espaçamento e cores, a IA ajuda a garantir que o design final esteja alinhado com as melhores práticas e tendências de mercado.</p><br>
+
+                        <p>Por fim, o impacto da IA no design gráfico vai além da eficiência e personalização. Ela está mudando a própria natureza do design, abrindo novas possibilidades criativas e estéticas. Através de redes neurais, por exemplo, é possível criar arte generativa, em que a IA colabora ativamente na criação de composições visuais únicas. Essa combinação entre arte e tecnologia permite que os designers explorem novas formas de expressão, redefinindo os limites do que é possível no design gráfico e abrindo caminho para um futuro de colaboração entre humanos e máquinas.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/arte_02.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">O Crescimento Explosivo das NFTs: A Revolução da Propriedade Digital e dos Ativos Únicos</h2>
+                    <p data-aos="fade-up">O crescimento das NFTs (tokens não fungíveis) tem sido um dos fenômenos mais marcantes da era digital recente, redefinindo a forma como enxergamos propriedade, arte e comércio no ambiente online...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>O crescimento das NFTs (tokens não fungíveis) tem sido um dos fenômenos mais marcantes da era digital recente, redefinindo a forma como enxergamos propriedade, arte e comércio no ambiente online. As NFTs são ativos digitais únicos registrados em blockchain, garantindo sua autenticidade e exclusividade. Diferente das criptomoedas tradicionais, que são intercambiáveis, cada NFT tem uma identidade própria e indivisível, permitindo que criadores de arte, música, jogos e outros conteúdos digitais monetizem suas criações de maneira direta, sem intermediários.</p><br>
+
+                        <p>O boom das NFTs começou a ganhar notoriedade em 2020 e se consolidou em 2021, quando artistas renomados, como Beeple, venderam suas obras digitais por milhões de dólares em plataformas especializadas. Isso abriu um novo mercado para artistas digitais que antes lutavam para proteger e vender suas criações, permitindo que pudessem registrar a propriedade intelectual de suas obras e comercializá-las como ativos colecionáveis. O apelo das NFTs vai além da arte tradicional, abrangendo também o universo de games, onde os jogadores podem comprar e vender itens únicos dentro dos jogos, criando uma economia digital vibrante.</p><br>
+
+                        <p>Além de promover a valorização de obras digitais, as NFTs oferecem um novo paradigma para o mercado de colecionáveis. O que antes era restrito a itens físicos, como cartas de beisebol, selos ou moedas, agora se expande para o digital. NFTs de clipes de vídeo esportivos, músicas, memes e até tweets se tornaram commodities valiosas. Esse modelo disruptivo transformou a forma como vemos a escassez no ambiente digital, já que mesmo um ativo replicável, como uma imagem, pode ser autenticado como único através de sua assinatura em blockchain, conferindo-lhe valor de mercado.</p><br>
+
+                        <p>O crescimento das NFTs também impulsionou o surgimento de novas plataformas e comunidades digitais dedicadas à compra, venda e troca desses ativos. Grandes empresas de tecnologia e entretenimento têm explorado o potencial das NFTs como forma de engajamento com seus públicos, criando edições limitadas de produtos digitais. Além disso, marcas de moda e luxo estão lançando coleções exclusivas no formato NFT, mesclando o digital com o físico e criando experiências inéditas de consumo.</p><br>
+
+                        <p>Apesar das oportunidades, o mercado de NFTs não está isento de controvérsias. Questões como a especulação, os altos custos das transações em blockchain e as preocupações ambientais relacionadas ao consumo energético têm levantado debates sobre a sustentabilidade desse crescimento. Mesmo assim, a tecnologia continua a evoluir, com melhorias sendo desenvolvidas para tornar as NFTs mais acessíveis e sustentáveis. À medida que o interesse pelo metaverso cresce, as NFTs prometem se consolidar como uma peça-chave na economia digital, criando novas formas de posse e interação com o mundo virtual.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/arte_03.png" alt="Notícia 1">
+                    <h2 data-aos="fade-up">A Revolução da Pop Art: Como a Cultura de Massa Transformou a Arte Moderna</h2>
+                    <p data-aos="fade-up">A Pop Art surgiu nos anos 1950, principalmente nos Estados Unidos e no Reino Unido, como uma resposta artística à cultura de massa e ao consumismo crescente da época...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A Pop Art surgiu nos anos 1950, principalmente nos Estados Unidos e no Reino Unido, como uma resposta artística à cultura de massa e ao consumismo crescente da época. O movimento, cujo nome vem de "popular", desafiou as fronteiras tradicionais entre arte e vida cotidiana ao incorporar elementos da cultura popular, como publicidade, quadrinhos, produtos industrializados e celebridades, dentro do universo artístico. Essa abordagem foi uma ruptura com os estilos anteriores, como o expressionismo abstrato, que valorizava a subjetividade e a introspecção, enquanto a Pop Art celebrava o banal e o comercial.</p><br>
+
+                        <p>Um dos pioneiros do movimento foi Richard Hamilton, que criou obras emblemáticas, como o famoso collage "Just what is it that makes today's homes so different, so appealing?" (1956). Nessa peça, ele usou recortes de anúncios e imagens de produtos de consumo, apontando para a crescente influência da mídia e do consumo no cotidiano. Ao mesmo tempo, no outro lado do Atlântico, artistas como Jasper Johns e Robert Rauschenberg começavam a experimentar nos Estados Unidos, utilizando imagens populares em suas criações.</p><br>
+
+                        <p>O auge da Pop Art aconteceu nos anos 1960, com figuras como Andy Warhol e Roy Lichtenstein. Warhol, talvez o nome mais icônico do movimento, imortalizou objetos do cotidiano, como latas de sopa Campbell's e garrafas de Coca-Cola, além de retratar celebridades como Marilyn Monroe em suas serigrafias coloridas. Ele explorava a repetição e a reprodução em massa, criticando e celebrando ao mesmo tempo a sociedade de consumo. Lichtenstein, por sua vez, adotou uma estética inspirada nos quadrinhos, utilizando grandes painéis pontilhados e balões de fala para abordar temas tanto banais quanto dramáticos, transformando o efêmero em arte.</p><br>
+
+                        <p>A Pop Art foi uma forma de criticar a superficialidade da cultura de massa ao mesmo tempo em que se apropriava dela, criando um diálogo ambíguo entre a arte e o consumo. O movimento questionou o que poderia ser considerado "arte" e quem tinha o poder de defini-la. Ao trazer produtos comuns e ícones da mídia para o contexto artístico, os artistas da Pop Art romperam as barreiras entre a arte erudita e a cultura popular, influenciando gerações futuras de criadores.</p><br>
+
+                        <p>Embora tenha atingido seu ápice nos anos 1960, a Pop Art continua a influenciar o mundo contemporâneo. Sua estética vibrante e sua crítica ao consumo de massa reverberam na cultura visual atual, do design gráfico à moda, mostrando que o movimento deixou um legado duradouro, redefinindo o conceito de arte e sua relação com a sociedade moderna.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/arte_04.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">A Arte Urbana pelo Mundo: Expressão Cultural que Transforma Cidades em Galerias a Céu Aberto</h2>
+                    <p data-aos="fade-up">A arte urbana, também conhecida como street art, tem ganhado destaque ao redor do mundo como uma forma poderosa de expressão cultural e social. Originada nas ruas, ela abrange uma ampla variedade de estilos e técnicas, como grafites, murais, estênceis e instalações, que transformam espaços públicos em verdadeiras galerias a céu aberto...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A arte urbana, também conhecida como street art, tem ganhado destaque ao redor do mundo como uma forma poderosa de expressão cultural e social. Originada nas ruas, ela abrange uma ampla variedade de estilos e técnicas, como grafites, murais, estênceis e instalações, que transformam espaços públicos em verdadeiras galerias a céu aberto. Inicialmente vista como vandalismo, a arte urbana evoluiu para ser reconhecida como uma importante manifestação artística, muitas vezes carregada de mensagens políticas, críticas sociais e retratos da vida cotidiana.</p><br>
+
+                        <p>Cidades como Nova York, Berlim, São Paulo e Londres se tornaram grandes epicentros dessa forma de arte. Em Nova York, o grafite emergiu na década de 1970, com artistas como Jean-Michel Basquiat e Keith Haring, que usavam os muros da cidade como telas para suas criações. Esses pioneiros não só ajudaram a legitimar o grafite como arte, mas também o transformaram em uma ferramenta de questionamento social e político. A cidade se consolidou como referência para artistas urbanos de todo o mundo, espalhando a influência do grafite para outros continentes.</p><br>
+
+                        <p>Na Europa, Berlim é famosa por sua vibrante cena de arte urbana, impulsionada pela história do Muro de Berlim, que se tornou uma das maiores telas ao ar livre. Após a queda do muro em 1989, a cidade se tornou um símbolo da liberdade de expressão, atraindo artistas de diversos países que deixaram suas marcas com obras que celebram a reunificação e abordam temas de resistência e mudança social. Em Londres, o famoso artista Banksy ajudou a consolidar a street art como um fenômeno global, com suas obras sarcásticas e politicamente carregadas que, muitas vezes, tocam questões como capitalismo, guerra e vigilância.</p><br>
+
+                        <p>No Brasil, São Paulo se destaca como um dos maiores polos de arte urbana do mundo, com uma estética distinta e carregada de identidade local. Artistas como Os Gêmeos e Kobra transformaram a cidade em um museu a céu aberto, com murais que ocupam prédios inteiros e contam histórias da cultura brasileira, abordando desde temas folclóricos até questões sociais e políticas. As cores vibrantes e o tamanho monumental de suas obras fazem parte de uma cultura artística que valoriza a conexão com a comunidade e o espaço urbano.</p><br>
+
+                        <p>Hoje, a arte urbana é um movimento global que transcende fronteiras, conectando artistas e culturas em um diálogo visual dinâmico. Em cidades de todos os continentes, murais e grafites são usados como forma de revitalização urbana, tornando espaços degradados em pontos turísticos e culturais. Mais do que decorar muros, a arte urbana é uma plataforma para artistas expressarem suas visões de mundo, criando um impacto social e estético que ressoa nas ruas e nas galerias, redefinindo o papel da arte nos espaços públicos.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/arte_05.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">A Sustentabilidade no Design: Criando Soluções Inteligentes e Responsáveis para o Futuro</h2>
+                    <p data-aos="fade-up">A sustentabilidade se tornou um pilar essencial no campo do design, refletindo a crescente preocupação com o impacto ambiental e social das criações. Em um mundo onde os recursos naturais estão cada vez mais escassos, os designers enfrentam o desafio de desenvolver soluções que sejam não apenas esteticamente agradáveis, mas também responsáveis e duradouras...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A sustentabilidade se tornou um pilar essencial no campo do design, refletindo a crescente preocupação com o impacto ambiental e social das criações. Em um mundo onde os recursos naturais estão cada vez mais escassos, os designers enfrentam o desafio de desenvolver soluções que sejam não apenas esteticamente agradáveis, mas também responsáveis e duradouras. A importância da sustentabilidade no design reside em sua capacidade de equilibrar funcionalidade, beleza e respeito ao meio ambiente, minimizando o desperdício e reduzindo os danos ecológicos.</p><br>
+
+                        <p>Um dos aspectos centrais da sustentabilidade no design é a escolha de materiais. Designers conscientes optam por materiais recicláveis, biodegradáveis ou renováveis, garantindo que o ciclo de vida do produto tenha o menor impacto possível no planeta. Isso se aplica desde a arquitetura e design de interiores até a moda e o design gráfico, onde o uso de tintas ecológicas, papéis certificados e processos de impressão de baixo consumo de energia são cada vez mais comuns. A escolha desses materiais também promove o pensamento de longo prazo, incentivando a criação de produtos duradouros, que evitem a cultura do descartável.</p><br>
+
+                        <p>Além dos materiais, o processo de produção é um fator crucial na busca por um design mais sustentável. Designers estão adotando métodos de fabricação que utilizam menos energia, água e geram menos resíduos. A manufatura local, por exemplo, é uma tendência crescente, pois reduz a pegada de carbono associada ao transporte de mercadorias. Esse enfoque também favorece o comércio justo e valoriza as comunidades locais, criando um ciclo de produção mais ético e sustentável.</p><br>
+
+                        <p>Outro elemento fundamental é a inovação. A sustentabilidade incentiva os designers a pensarem fora da caixa, propondo soluções criativas que atendam às necessidades humanas sem prejudicar o planeta. Isso se traduz em designs modulares, que podem ser facilmente desmontados e reutilizados, e na incorporação de tecnologias como a impressão 3D, que permite a produção sob demanda, reduzindo o desperdício de materiais. O design circular, que busca manter produtos e materiais em uso pelo maior tempo possível, também é uma abordagem que vem ganhando força, incentivando a reutilização e reciclagem.</p><br>
+
+                        <p>A importância da sustentabilidade para o design vai além do impacto ambiental. Ela reflete uma mudança de paradigma na forma como os designers enxergam seu papel na sociedade. O compromisso com um design sustentável não apenas contribui para um futuro mais verde, mas também estabelece uma nova relação entre as pessoas e os produtos que consomem, valorizando a responsabilidade, a durabilidade e a conexão com o ambiente. Ao colocar a sustentabilidade no centro de suas criações, os designers podem desempenhar um papel fundamental na construção de um mundo mais equilibrado e consciente.</p><br>
+                    </div>
+                </article>
+                <!-- Continue com os outros artigos da mesma maneira -->
+            </div>
+
+            <aside class="sidebar">
+                <div class="widget">
+                    <h3 data-aos="fade-up">Sobre Nós</h3>
+                    <p data-aos="fade-up">Bem-vindo ao seu portal de notícias completo e confiável, onde a informação de qualidade é prioridade...</p>
+                </div>
+                <div class="widget">
+                    <h3 data-aos="fade-up">Publicidade</h3><br>
+                    <img src="img/banner_asside_01.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_02.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_03.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_04.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_05.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_06.jpg" alt="Publicidade">
+                    <!-- Continue com outros conteúdos da sidebar -->
+                </div>
+                <div class="widget">
+                    <h3 data-aos="fade-up">Artigos Relevantes</h3>
+                    <p data-aos="fade-up">Artigo_01</p>
+                    <p data-aos="fade-up">Artigo_02</p>
+                    <p data-aos="fade-up">Artigo_03</p>
+                    <p data-aos="fade-up">Artigo_04</p>
+                    <p data-aos="fade-up">Artigo_05</p>
+                    <p data-aos="fade-up">Artigo_06</p>
+                    <p data-aos="fade-up">Artigo_07</p>
+                </div>
+            </aside>
+    
+        </section>
+
+        <section class="banner-ad">
+            <img src="img/banner_gif_01.gif" alt="Banner Publicitário">
+        </section>
+
+         <!-- Seção do Carrossel infinito -->
+         <section class="partners-section">
+            <div class="carousel">
+                <div class="carousel-track">
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <!-- Duplicate slides for smooth looping -->
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                </div>
+            </div>
+            <!-- Continue com outros parceiros -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="current-year"></span> Portal de Notícias.</p>
+        <div class="social-icons">
+            <a href="#" class="fab fa-tiktok"></a>
+            <a href="#" class="fab fa-youtube"></a>
+            <a href="#" class="fab fa-instagram"></a>
+            <a href="#" class="fab fa-facebook"></a>
+        </div>
+
+        <div class="whatsapp-button" onclick="window.open('https://wa.me/71983443744', '_blank');">
+            <img src="img/icons8-whatsapp-94.png" alt="WhatsApp">
+        </div>
+
+        <button id="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+    </footer>
+
+    <script>
+        // Burger Menu Toggle
+        const burger = document.querySelector('.burger');
+        const navLinks = document.querySelector('.nav-links');
+
+        burger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            burger.classList.toggle('toggle');
+        });
+
+        // Hide burger button when menu is active
+        const observer = new MutationObserver(() => {
+            if (navLinks.classList.contains('active')) {
+                burger.style.display = 'none';
+            } else {
+                burger.style.display = 'flex';
+            }
+        });
+
+        observer.observe(navLinks, { attributes: true });
+
+        // Carousel Functionality
+        let slideIndex = 0;
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.carousel-inner img');
+            if (index >= slides.length) slideIndex = 0;
+            if (index < 0) slideIndex = slides.length - 1;
+            const offset = -slideIndex * 100 + '%';
+            document.getElementById('carousel-inner').style.transform = `translateX(${offset})`;
+        }
+
+        function nextSlide() {
+            slideIndex++;
+            showSlide(slideIndex);
+        }
+
+        function prevSlide() {
+            slideIndex--;
+            showSlide(slideIndex);
+        }
+
+        // Auto-slide every 3 seconds
+        setInterval(nextSlide, 3000);
+
+        // Botão Voltar ao Topo
+        const backToTopButton = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Expandir e Retrair texto do botão "Saiba Mais"
+        function toggleContent(button) {
+            const content = button.nextElementSibling;
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                button.textContent = 'Saiba Menos';
+            } else {
+                content.style.display = 'none';
+                button.textContent = 'Saiba Mais';
+            }
+        }
+    </script>
+    <script>AOS.init();</script>
+</body>
+</html>

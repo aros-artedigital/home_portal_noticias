@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Notícias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="shortcut icon" href="img/favicon-32x32.png" type="image/x-icon">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <style>
+        /* Reset CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilo Global */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            /*background: #ff0000;*/
+            background-image: linear-gradient(to left, rgb(32, 51, 133), rgb(21, 103, 244), rgb(32, 51, 133));
+            background-size: 500% 100%;
+            animation: degrade-animado 3s infinite alternate;
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        @keyframes degrade-animado {
+           
+            0%{
+                background-position-x: 0%;
+            }
+
+            100%{
+                background-position-x: 100%;
+            }
+
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 1rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffa500;
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .hero {
+            background: url('img/header_04.jpg') no-repeat center center/cover;
+            height: 50vh;
+            width: 100%;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 70px; /* Ajuste a altura da margem conforme necessário */
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            text-shadow: 10px 10px 20px #333;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            text-shadow: 10px 10px 20px #333;
+        }
+
+        .news-section {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .news-article {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .news-article img {
+            width: 100%;
+            height: auto;
+        }
+
+        .news-article h2 {
+            margin: 1rem 0;
+            line-height: 3.5vh;
+            font-size: 3.5vh;
+        }
+
+        .news-article p {
+            font-size: 2.5vh;
+        }
+
+        #expandButton {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+        }
+
+        #expandButton:hover {
+            background-color: #0056b3;
+            box-shadow: 0 8px 12px rgba(0, 86, 179, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .extraContent {
+            display: none;
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .sidebar .widget {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-inner img {
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-control {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-control {
+                font-size: 1.5rem;
+                padding: 5px;
+            }
+        }
+
+        .banner-ad {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .banner-ad img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .carousel {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            animation: slide 40s linear infinite;
+        }
+        .carousel-slide {
+            min-width: 250px;
+            height: 100px;
+            margin-right: 0px;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Responsive design for tablets */
+        @media (max-width: 768px) {
+            .carousel-slide {
+                min-width: 200px; /* Adjust the width for tablets */
+                margin-right: 15px;
+            }
+        }
+
+        /* Responsive design for mobile phones */
+        @media (max-width: 480px) {
+            .carousel-track {
+                animation: slideMobile 40s linear infinite;
+            }
+            .carousel-slide {
+                min-width: 100%; /* Full width for mobile devices */
+                margin-right: 0;
+            }
+
+            @keyframes slideMobile {
+                0% {
+                    transform: translateX(0%);
+                }
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+        }
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            color: #fff;
+            background: #333;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            background: #ffa500;
+            transform: scale(1.1);
+        }
+
+        /* Botão Voltar ao Topo */
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: none;
+            z-index: 1000;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        #back-to-top:hover {
+            background: #ffa500;
+            transform: scale(1.1);
+        }
+
+        #back-to-top i {
+            font-size: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                display: none;
+                width: 100%;
+                height: 100vh;
+                background: #333;
+                position: absolute;
+                top: 0px;
+                left: 0;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+                font-size: 30px;
+                line-height: 60px;
+            }
+
+            .nav-links.active a:hover {
+                background-color: #cbcbcb;
+                padding: 10px 30px;
+                color: #333;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .burger.toggle {
+                display: none;
+            }
+
+            .logo {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .news-section {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .news-article {
+                margin: 0 auto;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .partners-section {
+                flex-direction: column;
+            }
+        }
+
+        .whatsapp-button {
+            position: fixed;
+            bottom: 65px;
+            right: 20px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+            z-index: 1000;
+        }
+
+        .whatsapp-button img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .whatsapp-button:hover {
+            animation: shake 0.3s;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1 data-aos="flip-up">Design</h1>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="noticias.html">Noticias</a></li>
+                <li><a href="tecnologia.html">Tecnologia</a></li>
+                <li><a href="arte.html">Arte</a></li>
+                <li><a href="design.html">Design</a></li>
+            </ul>
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1 data-aos="fade-up">Bem Vindo!!!</h1>
+                <p data-aos="fade-up">Confira as últimas notícias e novidades.</p>
+            </div>
+        </section>
+
+        <section class="carousel">
+            <div id="carousel-inner" class="carousel-inner">
+                <img src="img/topo_design/topo_design_01.jpg" alt="Carousel Image 1">
+                <img src="img/topo_design/topo_design_02.jpg" alt="Carousel Image 2">
+                <img src="img/topo_design/topo_design_03.jpg" alt="Carousel Image 3">
+                <img src="img/topo_design/topo_design_04.jpg" alt="Carousel Image 4">
+                <img src="img/topo_design/topo_design_05.jpg" alt="Carousel Image 5">
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
+                <button class="carousel-control next" onclick="nextSlide()">&#10095;</button>
+            </div>
+        </section>
+        <section class="news-section">
+            <div class="news-articles">
+                <article class="news-article">
+                    <img src="img/identidade_visual.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">A importância de uma boa identidade visual em um pequeno negócio</h2>
+                    <p data-aos="fade-up">A identidade visual é um dos pilares fundamentais para o sucesso de qualquer negócio, especialmente para pequenos empreendedores que enfrentam a concorrência acirrada e a necessidade de se destacar em mercados muitas vezes saturados...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A identidade visual é um dos pilares fundamentais para o sucesso de qualquer negócio, especialmente para pequenos empreendedores que enfrentam a concorrência acirrada e a necessidade de se destacar em mercados muitas vezes saturados. Ter uma identidade visual bem definida e coerente vai além de um logotipo atraente; trata-se de construir uma imagem sólida e reconhecível que transmita os valores, a missão e a proposta de valor da empresa. Em um cenário em que o visual é um dos primeiros pontos de contato com o cliente, a importância de investir em uma identidade visual consistente não pode ser subestimada.</p><br>
+
+                        <p>Para um pequeno negócio, a identidade visual é a base da primeira impressão. Ela influencia a percepção que o consumidor terá sobre o produto ou serviço oferecido. Um design visual que transmita profissionalismo, autenticidade e originalidade pode ser determinante para atrair clientes e gerar confiança. Em um mercado onde a maioria das decisões de compra é tomada em segundos, capturar a atenção com elementos visuais coesos e atraentes pode ser a chave para transformar curiosidade em conversão.</p><br>
+
+                        <p>Além disso, uma boa identidade visual contribui para a diferenciação. Em setores onde produtos e serviços muitas vezes parecem semelhantes, é a marca que torna uma empresa única. A combinação de cores, tipografia, estilo de imagens e outros elementos gráficos deve refletir o espírito do negócio e ajudar a contar sua história de forma memorável. Essa distinção não só ajuda a empresa a se destacar da concorrência, mas também a criar uma conexão emocional com o público-alvo, essencial para a fidelização de clientes.</p><br>
+
+                        <p>Outro ponto vital é a coerência na comunicação. Uma identidade visual bem pensada deve ser aplicada de forma consistente em todos os pontos de contato com o cliente – desde o site, redes sociais, embalagens, até o design da loja física. Essa uniformidade não apenas reforça a marca na mente do consumidor, mas também transmite um senso de organização e profissionalismo. Pequenos negócios que conseguem manter essa coesão visual têm mais facilidade para criar uma marca memorável e de confiança.</p><br>
+
+                        <p>Por fim, investir em uma identidade visual sólida é também uma maneira de agregar valor ao negócio a longo prazo. Marcas fortes e bem posicionadas têm maior facilidade em justificar preços mais elevados e expandir seu mercado. Para pequenos empreendedores, isso significa não apenas sobreviver, mas prosperar. A identidade visual, portanto, não é um custo, mas um investimento estratégico que pode determinar o rumo e o crescimento de um pequeno negócio no cenário competitivo atual.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/marketing_digital.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">O impacto que um bom marketing digital pode causar na propagação de uma marca. </h2>
+                    <p data-aos="fade-up">Um bom marketing digital tem o poder de transformar a trajetória de uma marca, especialmente em um mundo onde a presença online é cada vez mais crucial...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>Um bom marketing digital tem o poder de transformar a trajetória de uma marca, especialmente em um mundo onde a presença online é cada vez mais crucial. Com a expansão do acesso à internet e o aumento do uso das redes sociais, o marketing digital se tornou uma ferramenta essencial para alcançar e engajar consumidores de maneira eficiente e direta. Ao aproveitar estratégias bem elaboradas, uma marca pode não apenas aumentar sua visibilidade, mas também construir relacionamentos sólidos e duradouros com seu público.</p><br>
+
+                        <p>O impacto de um bom marketing digital começa com a amplificação do alcance da marca. Utilizando plataformas como Facebook, Instagram, Google e outras, é possível atingir audiências diversas em diferentes regiões e nichos de mercado, de maneira segmentada e personalizada. Ao adotar práticas como SEO, marketing de conteúdo, e campanhas pagas, a marca pode se posicionar estrategicamente para aparecer nos momentos de busca e interesse dos consumidores, aumentando exponencialmente suas chances de ser vista e lembrada.</p><br>
+
+                        <p>Mais do que apenas alcance, o marketing digital oferece a oportunidade de engajar o público de maneira direta e autêntica. Através de conteúdos relevantes, interativos e que agreguem valor, uma marca pode iniciar conversas, responder dúvidas, e participar ativamente da rotina de seus clientes. Esse engajamento cria uma comunidade em torno da marca, onde o público se sente parte e tem a chance de contribuir para seu crescimento e sucesso. A lealdade gerada a partir desse vínculo emocional é um dos maiores ativos que uma marca pode ter.</p><br>
+
+                        <p>Outra vantagem significativa do marketing digital é a capacidade de medir resultados em tempo real e ajustar estratégias rapidamente. Diferentemente das mídias tradicionais, onde o retorno sobre o investimento pode ser difícil de calcular, o marketing digital fornece métricas claras sobre o desempenho de cada campanha, como cliques, visualizações, conversões e taxas de rejeição. Essa análise constante permite que as marcas ajustem suas abordagens de maneira ágil, focando em estratégias que realmente funcionam, economizando tempo e recursos.</p><br>
+
+                        <p>Em última análise, o impacto de um bom marketing digital se traduz em crescimento sustentável para a marca. Ao criar uma presença online forte, atrair e engajar consumidores, e adaptar estratégias com base em dados concretos, as marcas se tornam mais competitivas e resilientes em um mercado em constante mudança. O marketing digital deixa de ser apenas uma ferramenta de divulgação e passa a ser um elemento estratégico essencial para a propagação e consolidação de uma marca no cenário global.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/redes_sociais.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">O poder de influência das redes sociais.</h2>
+                    <p data-aos="fade-up">As redes sociais se tornaram uma das forças mais influentes na sociedade contemporânea, moldando opiniões, comportamentos e até decisões de compra de bilhões de pessoas ao redor do mundo...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>As redes sociais se tornaram uma das forças mais influentes na sociedade contemporânea, moldando opiniões, comportamentos e até decisões de compra de bilhões de pessoas ao redor do mundo. Com plataformas como Instagram, TikTok, Facebook, Twitter e LinkedIn, o poder de influenciar não está mais restrito a grandes veículos de comunicação ou celebridades tradicionais; ele agora é acessível a qualquer pessoa com uma voz ativa e um público engajado. Essa democratização da comunicação tornou as redes sociais um espaço dinâmico e poderoso para a disseminação de ideias, tendências e movimentos sociais.</p><br>
+
+                        <p>O poder de influência das redes sociais começa com a sua capacidade única de conectar pessoas de diferentes origens, interesses e lugares em tempo real. A troca instantânea de informações e opiniões permite que ideias se espalhem rapidamente, criando um efeito de rede onde uma única postagem pode alcançar milhões em questão de minutos. Essa viralidade é amplificada pelo algoritmo das plataformas, que priorizam conteúdos populares e envolventes, transformando usuários comuns em influenciadores capazes de moldar comportamentos e tendências em larga escala.</p><br>
+
+                        <p>Além disso, as redes sociais têm um efeito profundo na construção e na percepção de identidade. Perfis, postagens, histórias e vídeos são curados por indivíduos para refletir suas personalidades, valores e crenças. Ao seguir, compartilhar e interagir com conteúdos que ressoam com suas próprias experiências, os usuários não apenas expressam quem são, mas também reforçam a narrativa de quem desejam ser. Essa capacidade de moldar identidades torna as redes sociais um poderoso instrumento para influenciar escolhas pessoais, desde o que vestir até onde viajar, que causas apoiar e que produtos consumir.</p><br>
+
+                        <p>O marketing de influência, em particular, tem se mostrado uma ferramenta extremamente eficaz nas redes sociais. Marcas e empresas aproveitam a confiança e o engajamento que influenciadores construíram com seus seguidores para promover produtos e serviços de forma mais autêntica e orgânica. Quando um influenciador recomenda algo, essa recomendação é percebida como uma dica de um amigo, e não como uma propaganda, aumentando significativamente a probabilidade de conversão. Esse tipo de marketing se baseia em uma relação de confiança estabelecida entre o influenciador e sua audiência, tornando a comunicação muito mais persuasiva.</p><br>
+
+                        <p>Por fim, o poder de influência das redes sociais não se limita apenas ao consumo; ele se estende a movimentos sociais e causas importantes. Campanhas de conscientização, protestos virtuais e mobilizações globais têm encontrado nas redes sociais um canal eficaz para amplificar suas vozes e reunir apoio. Movimentos como #BlackLivesMatter, #MeToo e diversos outros ganharam força e visibilidade em grande parte por causa das redes sociais, demonstrando como essas plataformas podem ser usadas para provocar mudanças reais e significativas na sociedade. Assim, as redes sociais se consolidam como um espaço não apenas de entretenimento, mas de influência e transformação global.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/web_desenvolvimento.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">A importância de uma webpage na construção de uma presença forte na internet.</h2>
+                    <p data-aos="fade-up">Uma webpage é um elemento essencial na construção de uma presença forte e eficaz na internet...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>Uma webpage é um elemento essencial na construção de uma presença forte e eficaz na internet. Em um mundo cada vez mais digital, onde a maioria dos consumidores inicia suas jornadas de compra ou busca por informações online, ter um website bem construído e funcional é fundamental para qualquer negócio ou projeto. Mais do que um cartão de visitas digital, a webpage é o ponto de encontro entre a marca e o seu público, sendo a base para todas as estratégias de marketing digital, e o local onde a credibilidade e a confiança são estabelecidas.</p><br>
+
+                        <p>A webpage serve como a central de informações da marca, reunindo todos os detalhes importantes sobre produtos, serviços, missão, valores e contato. Ao contrário das redes sociais, onde o conteúdo é fragmentado e segue o fluxo do algoritmo, um website permite um controle total sobre a apresentação da marca, criando uma narrativa coerente e personalizada. Esse ambiente controlado facilita a construção de uma identidade forte e consistente, essencial para criar uma impressão duradoura na mente do consumidor e garantir que ele encontre exatamente o que precisa.</p><br>
+
+                        <p>Além disso, um website bem estruturado é uma ferramenta poderosa para otimização de mecanismos de busca (SEO). Através de boas práticas de SEO, como a escolha adequada de palavras-chave, conteúdo de qualidade e uma estrutura de navegação amigável, a webpage pode melhorar significativamente o posicionamento nos resultados de busca do Google e outros motores de busca. Isso aumenta a visibilidade da marca e atrai tráfego orgânico qualificado, ou seja, visitantes que já estão interessados no que a empresa oferece. Uma boa estratégia de SEO transforma o site em uma fonte constante de geração de leads e novas oportunidades de negócios.</p><br>
+
+                        <p>Outra vantagem crucial de ter uma webpage é a credibilidade que ela confere à marca. Nos dias de hoje, a primeira coisa que muitos consumidores fazem ao ouvir falar de uma empresa ou profissional é procurar seu website. Se ele não existir ou parecer amador, isso pode gerar desconfiança e afastar potenciais clientes. Por outro lado, uma webpage profissional, moderna e funcional transmite seriedade, transparência e compromisso, criando uma primeira impressão positiva e incentivando o engajamento e a conversão.</p><br>
+
+                        <p>Por fim, a webpage é um ponto de contato direto com o público, oferecendo recursos que outras plataformas não proporcionam. Formulários de contato, blogs, chats online, integrações com sistemas de CRM e opções de comércio eletrônico tornam o website um verdadeiro hub de interação e transações. Ele permite não apenas a divulgação de informações, mas também a coleta de dados valiosos sobre o comportamento do usuário, possibilitando estratégias mais personalizadas e eficazes. Assim, uma webpage bem planejada e mantida é um ativo indispensável para construir uma presença forte e competitiva na internet.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/etica_design_01.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">Design e Ética Digital: Discutindo a responsabilidade dos designers na criação de produtos digitais que respeitem a privacidade e o bem-estar dos usuários.</h2>
+                    <p data-aos="fade-up">O design e a ética digital são temas cada vez mais relevantes no desenvolvimento de produtos tecnológicos em um mundo hiperconectado...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>O design e a ética digital são temas cada vez mais relevantes no desenvolvimento de produtos tecnológicos em um mundo hiperconectado. Designers, enquanto criadores de experiências digitais, possuem um papel crucial na forma como interagimos com a tecnologia diariamente. A responsabilidade deles vai muito além de criar interfaces atraentes ou funcionalidades inovadoras; é também garantir que esses produtos respeitem a privacidade e promovam o bem-estar dos usuários. Em uma era marcada por preocupações com segurança de dados e saúde mental, a ética no design digital não é apenas uma opção, mas uma obrigação.</p><br>
+
+                        <p>Uma das principais responsabilidades dos designers digitais é proteger a privacidade dos usuários. Eles devem criar interfaces e fluxos de interação que sejam claros quanto ao uso de dados pessoais, garantindo que as informações coletadas sejam limitadas ao necessário e usadas de forma transparente e ética. Isso inclui projetar consentimentos informados, onde o usuário compreenda claramente o que está sendo coletado, como será usado e com quem será compartilhado. A complexidade ou falta de clareza em políticas de privacidade pode ser uma forma de manipulação, e cabe ao designer evitar práticas enganosas que comprometam a confiança do usuário.</p><br>
+
+                        <p>Outro aspecto crítico é o impacto do design digital no bem-estar psicológico e emocional dos usuários. Muitos produtos digitais, como redes sociais e aplicativos de jogos, são projetados para maximizar o tempo de uso, explorando vulnerabilidades humanas para criar dependência ou comportamentos compulsivos. Designers éticos devem questionar essas práticas e buscar criar experiências que respeitem o tempo e a saúde mental dos usuários, evitando mecânicas manipuladoras, como notificações incessantes ou a rolagem infinita de conteúdo. O foco deve ser em criar valor real e positivo, promovendo uma relação saudável com a tecnologia.</p><br>
+
+                        <p>Além disso, o design inclusivo é parte essencial da ética digital. Designers têm a responsabilidade de criar produtos acessíveis a todas as pessoas, independentemente de suas habilidades, idade ou contexto socioeconômico. Isso inclui considerar necessidades especiais, como deficiências visuais, auditivas, motoras ou cognitivas, garantindo que as interfaces sejam utilizáveis por todos. A falta de inclusão digital não só exclui uma parte significativa da população, mas também perpetua desigualdades e injustiças. Portanto, o design ético deve ser inclusivo por padrão, promovendo a equidade digital.</p><br>
+
+                        <p>Por fim, a responsabilidade ética dos designers também envolve a criação de produtos que capacitem os usuários a tomar decisões informadas e conscientes. Isso significa evitar padrões obscuros, como botões ocultos, textos enganosos ou práticas que incentivem ações impulsivas, como compras ou assinaturas não intencionais. O design ético deve sempre priorizar o interesse do usuário, criando interfaces que sejam claras, intuitivas e transparentes. Ao fazer isso, os designers não apenas protegem os direitos dos usuários, mas também contribuem para um ecossistema digital mais justo e confiável.</p><br>
+                        <p>Em suma, o design digital ético é um compromisso com a criação de produtos que respeitem a dignidade, a privacidade e o bem-estar dos usuários. Designers têm o poder de moldar a forma como interagimos com a tecnologia e, com isso, a responsabilidade de assegurar que essas interações sejam saudáveis, seguras e equitativas. Ao integrar a ética em suas práticas, eles não apenas constroem produtos melhores, mas também promovem um futuro digital mais responsável e humano.</p><br>
+                    </div>
+                </article>
+                <!-- Continue com os outros artigos da mesma maneira -->
+            </div>
+
+            <aside class="sidebar">
+                <div class="widget">
+                    <h3 data-aos="fade-up">Sobre Nós</h3>
+                    <p data-aos="fade-up">Bem-vindo ao seu portal de notícias completo e confiável, onde a informação de qualidade é prioridade...</p>
+                </div>
+                <div class="widget">
+                    <h3 data-aos="fade-up">Publicidade</h3><br>
+                    <img src="img/banner_asside_01.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_02.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_03.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_04.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_05.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_06.jpg" alt="Publicidade">
+                    <!-- Continue com outros conteúdos da sidebar -->
+                </div>
+                <div class="widget">
+                    <h3 data-aos="fade-up">Artigos Relevantes</h3>
+                    <p data-aos="fade-up">Artigo_01</p>
+                    <p data-aos="fade-up">Artigo_02</p>
+                    <p data-aos="fade-up">Artigo_03</p>
+                    <p data-aos="fade-up">Artigo_04</p>
+                    <p data-aos="fade-up">Artigo_05</p>
+                    <p data-aos="fade-up">Artigo_06</p>
+                    <p data-aos="fade-up">Artigo_07</p>
+                </div>
+            </aside>
+        </section>
+
+        <section class="banner-ad">
+            <img src="img/banner_gif_01.gif" alt="Banner Publicitário">
+        </section>
+
+        <!-- Seção do Carrossel infinito -->
+        <section class="partners-section">
+            <div class="carousel">
+                <div class="carousel-track">
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <!-- Duplicate slides for smooth looping -->
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                </div>
+            </div>
+            <!-- Continue com outros parceiros -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="current-year"></span> Portal de Notícias.</p>
+        <div class="social-icons">
+            <a href="#" class="fab fa-tiktok"></a>
+            <a href="#" class="fab fa-youtube"></a>
+            <a href="#" class="fab fa-instagram"></a>
+            <a href="#" class="fab fa-facebook"></a>
+        </div>
+
+        <div class="whatsapp-button" onclick="window.open('https://wa.me/71983443744', '_blank');">
+            <img src="img/icons8-whatsapp-94.png" alt="WhatsApp">
+        </div>
+
+        <button id="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+    </footer>
+
+    <script>
+        // Burger Menu Toggle
+        const burger = document.querySelector('.burger');
+        const navLinks = document.querySelector('.nav-links');
+
+        burger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            burger.classList.toggle('toggle');
+        });
+
+        // Hide burger button when menu is active
+        const observer = new MutationObserver(() => {
+            if (navLinks.classList.contains('active')) {
+                burger.style.display = 'none';
+            } else {
+                burger.style.display = 'flex';
+            }
+        });
+
+        observer.observe(navLinks, { attributes: true });
+
+        // Carousel Functionality
+        let slideIndex = 0;
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.carousel-inner img');
+            if (index >= slides.length) slideIndex = 0;
+            if (index < 0) slideIndex = slides.length - 1;
+            const offset = -slideIndex * 100 + '%';
+            document.getElementById('carousel-inner').style.transform = `translateX(${offset})`;
+        }
+
+        function nextSlide() {
+            slideIndex++;
+            showSlide(slideIndex);
+        }
+
+        function prevSlide() {
+            slideIndex--;
+            showSlide(slideIndex);
+        }
+
+        // Auto-slide every 3 seconds
+        setInterval(nextSlide, 3000);
+
+        // Botão Voltar ao Topo
+        const backToTopButton = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Expandir e Retrair texto do botão "Saiba Mais"
+        function toggleContent(button) {
+            const content = button.nextElementSibling;
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                button.textContent = 'Saiba Menos';
+            } else {
+                content.style.display = 'none';
+                button.textContent = 'Saiba Mais';
+            }
+        }
+    </script>
+    <script>AOS.init();</script>
+</body>
+</html>

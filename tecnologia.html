@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Notícias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="shortcut icon" href="img/favicon-32x32.png" type="image/x-icon">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <style>
+        /* Reset CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilo Global */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            /*background: #ff0000;*/
+            background-image: linear-gradient(to left, rgb(255, 115, 0), rgb(253, 175, 111), rgb(255, 115, 0));
+            background-size: 500% 100%;
+            animation: degrade-animado 3s infinite alternate;
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        @keyframes degrade-animado {
+           
+            0%{
+                background-position-x: 0%;
+            }
+
+            100%{
+                background-position-x: 100%;
+            }
+
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 1rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffa500;
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .hero {
+            background: url('img/header_04.jpg') no-repeat center center/cover;
+            height: 50vh;
+            width: 100%;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 70px; /* Ajuste a altura da margem conforme necessário */
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            text-shadow: 10px 10px 20px #333;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            text-shadow: 10px 10px 20px #333;
+        }
+
+        .news-section {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .news-article {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .news-article img {
+            width: 100%;
+            height: auto;
+        }
+
+        .news-article h2 {
+            margin: 1rem 0;
+            line-height: 3.5vh;
+            font-size: 3.5vh;
+        }
+
+        .news-article p {
+            font-size: 2.5vh;
+        }
+
+        #expandButton {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+        }
+
+        #expandButton:hover {
+            background-color: #0056b3;
+            box-shadow: 0 8px 12px rgba(0, 86, 179, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .extraContent {
+            display: none;
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .sidebar .widget {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-inner img {
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-control {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-control {
+                font-size: 1.5rem;
+                padding: 5px;
+            }
+        }
+
+        .banner-ad {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .banner-ad img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .carousel {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            animation: slide 20s linear infinite;
+        }
+        .carousel-slide {
+            min-width: 250px;
+            height: 100px;
+            margin-right: 0px;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Responsive design for tablets */
+        @media (max-width: 768px) {
+            .carousel-slide {
+                min-width: 200px; /* Adjust the width for tablets */
+                margin-right: 15px;
+            }
+        }
+
+        /* Responsive design for mobile phones */
+        @media (max-width: 480px) {
+            .carousel-track {
+                animation: slideMobile 40s linear infinite;
+            }
+            .carousel-slide {
+                min-width: 100%; /* Full width for mobile devices */
+                margin-right: 0;
+            }
+
+            @keyframes slideMobile {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+        }
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            color: #fff;
+            background: #333;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            background: #ffa500;
+            transform: scale(1.1);
+        }
+
+        /* Botão Voltar ao Topo */
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: none;
+            z-index: 1000;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        #back-to-top:hover {
+            background: #ffa500;
+            transform: scale(1.1);
+        }
+
+        #back-to-top i {
+            font-size: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                display: none;
+                width: 100%;
+                height: 100vh;
+                background: #333;
+                position: absolute;
+                top: 0px;
+                left: 0;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+                font-size: 30px;
+                line-height: 60px;
+            }
+
+            .nav-links.active a:hover {
+                background-color: #cbcbcb;
+                padding: 10px 30px;
+                color: #333;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .burger.toggle {
+                display: none;
+            }
+
+            .logo {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .news-section {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .news-article {
+                margin: 0 auto;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .partners-section {
+                flex-direction: column;
+            }
+        }
+
+        .whatsapp-button {
+            position: fixed;
+            bottom: 65px;
+            right: 20px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+            z-index: 1000;
+        }
+
+        .whatsapp-button img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .whatsapp-button:hover {
+            animation: shake 0.3s;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1 data-aos="flip-up">Tecnologia</h1>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="noticias.html">Noticias</a></li>
+                <li><a href="tecnologia.html">Tecnologia</a></li>
+                <li><a href="arte.html">Arte</a></li>
+                <li><a href="design.html">Design</a></li>
+            </ul>
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1 data-aos="fade-up">Bem Vindo!!!</h1>
+                <p data-aos="fade-up">Confira as últimas notícias e novidades.</p>
+            </div>
+        </section>
+
+        <section class="carousel">
+            <div id="carousel-inner" class="carousel-inner">
+                <img src="img/topo_tecnologia/topo_tecnologia_01.jpg" alt="Carousel Image 1">
+                <img src="img/topo_tecnologia/topo_tecnologia_02.jpg" alt="Carousel Image 2">
+                <img src="img/topo_tecnologia/topo_tecnologia_03.jpg" alt="Carousel Image 3">
+                <img src="img/topo_tecnologia/topo_tecnologia_04.jpg" alt="Carousel Image 4">
+                <img src="img/topo_tecnologia/topo_tecnologia_05.jpg" alt="Carousel Image 5">
+                <img src="img/topo_tecnologia/topo_tecnologia_06.jpg" alt="Carousel Image 6">
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
+                <button class="carousel-control next" onclick="nextSlide()">&#10095;</button>
+            </div>
+        </section>
+        <section class="news-section">
+            <div class="news-articles">
+                <article class="news-article">
+                    <img src="img/tecnologia_01.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">O Impacto da Inteligência Artificial no Design Gráfico: Uma Revolução Criativa</h2>
+                    <p data-aos="fade-up">Além de aumentar a eficiência, a IA está expandindo os limites criativos do design gráfico....</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A inteligência artificial (IA) está transformando radicalmente o campo do design gráfico, trazendo novas possibilidades criativas e otimizando processos que antes eram demorados e trabalhosos. Ferramentas de IA estão agora integradas em softwares de design, permitindo que designers criem de forma mais rápida e eficiente, automatizando tarefas repetitivas como redimensionamento de imagens, ajuste de cores e até a geração de layouts completos. Isso permite que os profissionais se concentrem mais na parte conceitual e criativa do trabalho.</p><br>
+
+                        <p>Com a IA, o design gráfico também se torna mais acessível a pessoas sem treinamento formal. Plataformas baseadas em IA oferecem recursos intuitivos que permitem aos usuários criar designs sofisticados com apenas alguns cliques, democratizando o acesso ao design de qualidade. Por outro lado, isso gera um novo desafio para os designers profissionais: a necessidade de se destacarem em um mercado cada vez mais competitivo, onde a criatividade e a inovação se tornam diferenciais essenciais.</p><br>
+
+                        <p>Além de aumentar a eficiência, a IA está expandindo os limites criativos do design gráfico. Algoritmos de machine learning são capazes de analisar tendências, prever preferências de usuários e sugerir elementos de design que melhor se adequam a cada público-alvo. Essa análise orientada por dados possibilita uma personalização nunca vista antes, criando experiências visuais mais impactantes e engajadoras para o público.</p><br>
+
+                        <p>Contudo, a presença da IA no design gráfico levanta questões importantes sobre originalidade e autenticidade. A capacidade da IA de gerar designs automaticamente pode resultar em trabalhos que, embora visualmente atraentes, carecem da essência única de uma criação humana. A colaboração entre humanos e máquinas será essencial para garantir que a arte digital não perca sua alma, combinando a eficiência tecnológica com a sensibilidade humana.</p><br>
+
+                        <p>Em resumo, a inteligência artificial está moldando o futuro do design gráfico de maneiras profundas e inesperadas. Enquanto automatiza processos e amplia as possibilidades criativas, também desafia os designers a se reinventarem constantemente e a encontrarem novas formas de agregar valor através de sua originalidade e visão. A evolução do design gráfico com a IA é inevitável e, para muitos, uma oportunidade emocionante de explorar novas fronteiras da criatividade.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/tecnologia_02.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">Tecnologia 5G: O Futuro Conectado Já Começou</h2>
+                    <p data-aos="fade-up">Você já sabe o suficiente sobre essa tecnologia ?...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A tecnologia 5G é a nova geração de conectividade móvel, trazendo uma revolução na forma como interagimos com o mundo digital. Muito mais do que apenas uma evolução do 4G, o 5G promete velocidades de conexão até 100 vezes mais rápidas, latência ultrabaixa e uma capacidade de rede que pode suportar milhões de dispositivos simultaneamente. Essa nova infraestrutura de rede não só aprimora a experiência do usuário final, mas também abre portas para uma infinidade de aplicações inovadoras que transformarão setores inteiros da economia.</p><br>
+
+                        <p>Com o 5G, o conceito de "internet das coisas" (IoT) ganha um novo impulso, permitindo a conexão em massa de dispositivos em tempo real. Imagine cidades inteligentes, onde semáforos, câmeras, carros autônomos e dispositivos pessoais comunicam-se instantaneamente para otimizar o tráfego e aumentar a segurança. Ou fábricas inteligentes, onde robôs e sistemas de controle trabalham em perfeita sincronia, aumentando a produtividade e reduzindo custos. O 5G é o enabler que fará essas visões futurísticas se tornarem realidade.</p><br>
+
+                        <p>A tecnologia 5G também promete transformar o mundo do entretenimento e da comunicação. Experiências de realidade aumentada (AR) e virtual (VR) ganharão um novo patamar de imersão e qualidade, permitindo jogos mais realistas e interações sociais em ambientes digitais que antes eram limitados pela largura de banda. Serviços de streaming de vídeo e áudio terão melhor qualidade e menos buffer, mesmo em alta resolução, e novos formatos de mídia interativa poderão surgir, aproveitando a baixa latência e alta velocidade do 5G.</p><br>
+
+                        <p>Entretanto, a adoção do 5G não é isenta de desafios. A implementação exige investimentos maciços em infraestrutura, como a instalação de milhares de novas antenas e a criação de uma rede de fibra óptica de suporte. Além disso, a questão da segurança cibernética se torna ainda mais crítica, pois mais dispositivos conectados significam mais pontos de vulnerabilidade. Reguladores, empresas e consumidores precisarão trabalhar juntos para garantir que a transição para o 5G seja segura e eficaz.</p><br>
+
+                        <p>Em resumo, a tecnologia 5G representa uma mudança de paradigma na conectividade global, trazendo consigo a promessa de um futuro mais rápido, conectado e inteligente. Ao expandir as fronteiras do que é possível com a tecnologia atual, o 5G nos coloca à beira de uma nova era de inovação. Para empresas, governos e indivíduos, o momento é de preparação e adaptação, pois o impacto do 5G será profundo e abrangente, moldando a próxima década de desenvolvimento tecnológico.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/tecnologia_03.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">Startups Criativas: Inovação que Transforma Ideias em Realidade</h2>
+                    <p data-aos="fade-up">As startups criativas estão emergindo como forças disruptivas em um mundo cada vez mais dinâmico e digital...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>As startups criativas estão emergindo como forças disruptivas em um mundo cada vez mais dinâmico e digital. Estas empresas inovadoras, que nascem com ideias ousadas e modelos de negócios flexíveis, têm como objetivo redefinir setores tradicionais e criar soluções originais para problemas complexos. A criatividade é o seu maior ativo, permitindo-lhes explorar novos territórios, desafiar convenções e entregar valor de maneiras surpreendentes.</p><br>
+
+                        <p>Em seu núcleo, uma startup criativa combina paixão, talento e tecnologia para gerar impacto positivo. Seja no desenvolvimento de plataformas de educação inovadoras, produtos de design sustentável, experiências de realidade aumentada ou novos formatos de entretenimento digital, essas empresas estão rompendo com os padrões convencionais e criando novos mercados. Elas se destacam pela capacidade de enxergar oportunidades onde ninguém mais vê e pela rapidez com que transformam ideias em produtos viáveis.</p><br>
+
+                        <p>O sucesso das startups criativas depende de uma cultura de colaboração e experimentação. Muitas dessas empresas adotam metodologias ágeis, que permitem testar, ajustar e melhorar continuamente seus produtos e serviços. O foco na resolução de problemas e na experiência do usuário é uma constante, e o feedback é valorizado como combustível para inovação. É essa agilidade que permite às startups criativas reagir rapidamente às mudanças de mercado e se adaptar com uma velocidade que grandes corporações muitas vezes não conseguem acompanhar.</p><br>
+
+                        <p>No entanto, o caminho para o sucesso das startups criativas não é isento de desafios. A competição é acirrada, e a necessidade de financiamento, recursos e visibilidade é constante. Para prosperar, essas empresas precisam não apenas de ideias brilhantes, mas também de um sólido planejamento estratégico, capacidade de execução e uma narrativa convincente que atraia investidores e parceiros. As startups criativas que conseguem equilibrar a inovação com a sustentabilidade financeira são aquelas que se destacam e se mantêm no mercado.</p><br>
+
+                        <p>Em um cenário onde a inovação é a chave para o crescimento, as startups criativas desempenham um papel vital. Elas inspiram mudanças, desafiam o status quo e impulsionam a economia com novas soluções que atendem às necessidades de um mundo em constante evolução. Seja trazendo novas formas de consumo consciente, desenvolvendo tecnologias de ponta ou reinventando experiências cotidianas, essas empresas têm um impacto significativo na sociedade e representam o futuro do empreendedorismo global.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/tecnologia_04.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">Computação Quântica: A Próxima Fronteira da Tecnologia</h2>
+                    <p data-aos="fade-up">A computação quântica é uma das tecnologias mais revolucionárias e promissoras do nosso tempo, prometendo transformar radicalmente a maneira como processamos informações...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A computação quântica é uma das tecnologias mais revolucionárias e promissoras do nosso tempo, prometendo transformar radicalmente a maneira como processamos informações. Diferente dos computadores clássicos, que usam bits para representar dados como 0 ou 1, os computadores quânticos utilizam qubits, que podem existir simultaneamente em múltiplos estados. Essa característica, conhecida como superposição, permite que os computadores quânticos realizem cálculos complexos de forma exponencialmente mais rápida do que os computadores tradicionais.</p><br>
+
+                        <p>Uma das propriedades mais intrigantes da computação quântica é o entrelaçamento quântico, um fenômeno onde qubits em diferentes estados podem se conectar de tal maneira que o estado de um qubit instantaneamente afeta o estado de outro, mesmo que estejam separados por grandes distâncias. Isso cria um poder de processamento colaborativo sem precedentes, permitindo resolver problemas que atualmente estão fora do alcance dos computadores clássicos, como simulações moleculares complexas para descobrir novos medicamentos ou desenvolver materiais avançados.</p><br>
+
+                        <p>Além de seu potencial para resolver problemas científicos, a computação quântica também promete revolucionar áreas como criptografia e segurança da informação. Com sua capacidade de quebrar algoritmos de criptografia convencionais em questão de segundos, a computação quântica está impulsionando uma corrida global para desenvolver métodos de criptografia quântica que sejam invulneráveis a tais ataques. O futuro da segurança digital depende, em parte, da compreensão e do avanço da computação quântica.</p><br>
+
+                        <p>Contudo, a computação quântica ainda está em sua infância. A construção de computadores quânticos está repleta de desafios técnicos, como a manutenção da coerência quântica, que é extremamente sensível a interferências do ambiente, e o desenvolvimento de algoritmos que possam aproveitar ao máximo o poder quântico. Empresas de tecnologia e institutos de pesquisa em todo o mundo estão investindo bilhões em pesquisa e desenvolvimento para superar esses obstáculos e construir computadores quânticos estáveis e escaláveis.</p><br>
+
+                        <p>Em resumo, a computação quântica representa a próxima fronteira da tecnologia, com o potencial de redefinir o que é possível na ciência, na indústria e no cotidiano. Embora ainda estejamos nos estágios iniciais dessa jornada, o progresso já alcançado é um sinal de que o futuro será profundamente impactado por essa nova era de computação. À medida que continuamos a explorar e desenvolver essa tecnologia, as possibilidades são tão vastas quanto o próprio universo quântico.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/tecnologia_05.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">Realidade Aumentada: Transformando o Mundo ao Nosso Redor</h2>
+                    <p data-aos="fade-up">A realidade aumentada (RA) é uma tecnologia que está mudando a maneira como interagimos com o mundo ao nosso redor, integrando o digital com o físico de maneiras novas e inovadoras...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A realidade aumentada (RA) é uma tecnologia que está mudando a maneira como interagimos com o mundo ao nosso redor, integrando o digital com o físico de maneiras novas e inovadoras. Ao sobrepor informações virtuais – como imagens, sons e outros dados – ao ambiente real, a RA oferece experiências imersivas que ampliam nossa percepção e compreensão do que nos cerca. Desde jogos e entretenimento até educação, medicina e varejo, a realidade aumentada está se tornando uma ferramenta essencial para enriquecer o cotidiano.</p><br>
+
+                        <p>No setor de entretenimento, a RA já conquistou milhões de usuários com jogos que trazem o digital para o mundo real, como o popular "Pokémon GO". Mas a tecnologia vai muito além dos jogos. Ela permite que museus ofereçam tours interativos, que peças de teatro ganhem cenários virtuais dinâmicos, e que eventos esportivos apresentem dados em tempo real para os espectadores. Essas experiências não apenas entretêm, mas também envolvem o público de maneira profunda e personalizada.</p><br>
+
+                        <p>Na educação, a realidade aumentada transforma o aprendizado em uma experiência interativa e engajante. Alunos podem explorar o sistema solar em 3D na palma de suas mãos, visualizar o corpo humano em detalhes surpreendentes ou reviver momentos históricos como se estivessem lá. A RA quebra as barreiras tradicionais da sala de aula, tornando o aprendizado mais dinâmico e acessível, promovendo um entendimento mais profundo e intuitivo de temas complexos.</p><br>
+
+                        <p>A realidade aumentada também está revolucionando setores como o varejo e o e-commerce. Com a RA, consumidores podem “experimentar” roupas virtualmente, visualizar como móveis ficariam em suas casas antes de comprá-los, ou receber informações detalhadas sobre produtos enquanto navegam pelas prateleiras das lojas. Isso proporciona uma experiência de compra mais informada, conveniente e personalizada, ajudando empresas a se conectarem melhor com seus clientes e aumentando as taxas de conversão.</p><br>
+
+                        <p>À medida que a tecnologia avança, a realidade aumentada promete se integrar ainda mais à nossa rotina diária, oferecendo novas formas de aprender, trabalhar, interagir e se divertir. A combinação de dados digitais e o mundo físico abre um leque infinito de possibilidades, permitindo que a criatividade humana alcance novos patamares. A RA não é apenas uma tendência; é uma revolução em andamento que continuará a moldar o futuro de como percebemos e interagimos com a realidade ao nosso redor.</p><br>
+                    </div>
+                </article>
+                <!-- Continue com os outros artigos da mesma maneira -->
+            </div>
+
+            <aside class="sidebar">
+                <div class="widget">
+                    <h3 data-aos="fade-up">Sobre Nós</h3>
+                    <p data-aos="fade-up">Bem-vindo ao seu portal de notícias completo e confiável, onde a informação de qualidade é prioridade...</p>
+                </div>
+                <div class="widget">
+                    <h3>Publicidade</h3><br>
+                    <img src="img/banner_asside_01.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_02.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_03.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_04.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_05.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_06.jpg" alt="Publicidade">
+                    <!-- Continue com outros conteúdos da sidebar -->
+                </div>
+                <div class="widget">
+                    <h3 data-aos="fade-up">Artigos Relevantes</h3>
+                    <p data-aos="fade-up">Artigo_01</p>
+                    <p data-aos="fade-up">Artigo_02</p>
+                    <p data-aos="fade-up">Artigo_03</p>
+                    <p data-aos="fade-up">Artigo_04</p>
+                    <p data-aos="fade-up">Artigo_05</p>
+                    <p data-aos="fade-up">Artigo_06</p>
+                    <p data-aos="fade-up">Artigo_07</p>
+                </div>
+            </aside>
+        </section>
+
+        <section class="banner-ad">
+            <img src="img/banner_gif_01.gif" alt="Banner Publicitário">
+        </section>
+
+        <section class="partners-section">
+            <div class="carousel">
+                <div class="carousel-track">
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <!-- Duplicate slides for smooth looping -->
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                </div>
+            </div>
+            <!-- Continue com outros parceiros -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="current-year"></span> Portal de Notícias.</p>
+        <div class="social-icons">
+            <a href="#" class="fab fa-tiktok"></a>
+            <a href="#" class="fab fa-youtube"></a>
+            <a href="#" class="fab fa-instagram"></a>
+            <a href="#" class="fab fa-facebook"></a>
+        </div>
+
+        <div class="whatsapp-button" onclick="window.open('https://wa.me/71983443744', '_blank');">
+            <img src="img/icons8-whatsapp-94.png" alt="WhatsApp">
+        </div>
+
+        <button id="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+    </footer>
+
+    <script>
+        // Burger Menu Toggle
+        const burger = document.querySelector('.burger');
+        const navLinks = document.querySelector('.nav-links');
+
+        burger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            burger.classList.toggle('toggle');
+        });
+
+        // Hide burger button when menu is active
+        const observer = new MutationObserver(() => {
+            if (navLinks.classList.contains('active')) {
+                burger.style.display = 'none';
+            } else {
+                burger.style.display = 'flex';
+            }
+        });
+
+        observer.observe(navLinks, { attributes: true });
+
+        // Carousel Functionality
+        let slideIndex = 0;
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.carousel-inner img');
+            if (index >= slides.length) slideIndex = 0;
+            if (index < 0) slideIndex = slides.length - 1;
+            const offset = -slideIndex * 100 + '%';
+            document.getElementById('carousel-inner').style.transform = `translateX(${offset})`;
+        }
+
+        function nextSlide() {
+            slideIndex++;
+            showSlide(slideIndex);
+        }
+
+        function prevSlide() {
+            slideIndex--;
+            showSlide(slideIndex);
+        }
+
+        // Auto-slide every 3 seconds
+        setInterval(nextSlide, 3000);
+
+        // Botão Voltar ao Topo
+        const backToTopButton = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Expandir e Retrair texto do botão "Saiba Mais"
+        function toggleContent(button) {
+            const content = button.nextElementSibling;
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                button.textContent = 'Saiba Menos';
+            } else {
+                content.style.display = 'none';
+                button.textContent = 'Saiba Mais';
+            }
+        }
+    </script>
+    <script>AOS.init();</script>
+</body>
+</html>

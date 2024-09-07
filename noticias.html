@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Notícias</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="shortcut icon" href="img/favicon-32x32.png" type="image/x-icon">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <style>
+        /* Reset CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilo Global */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            /*background: #ff0000;*/
+            background-image: linear-gradient(to left, rgb(64, 123, 42), rgb(81, 255, 0), rgb(64, 123, 42));
+            background-size: 500% 100%;
+            animation: degrade-animado 3s infinite alternate;
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        @keyframes degrade-animado {
+           
+            0%{
+                background-position-x: 0%;
+            }
+
+            100%{
+                background-position-x: 100%;
+            }
+
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 1rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffa500;
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .hero {
+            background: url('img/header_04.jpg') no-repeat center center/cover;
+            height: 50vh;
+            width: 100%;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 70px; /* Ajuste a altura da margem conforme necessário */
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            text-shadow: 10px 10px 20px #333;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            text-shadow: 10px 10px 20px #333;
+        }
+
+        .news-section {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .news-article {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .news-article img {
+            width: 100%;
+            height: auto;
+        }
+
+        .news-article h2 {
+            margin: 1rem 0;
+            line-height: 3.5vh;
+            font-size: 3.5vh;
+        }
+
+        .news-article p {
+            font-size: 2.5vh;
+        }
+
+        #expandButton {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+        }
+
+        #expandButton:hover {
+            background-color: #0056b3;
+            box-shadow: 0 8px 12px rgba(0, 86, 179, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .extraContent {
+            display: none;
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .sidebar .widget {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-inner img {
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-control {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-control {
+                font-size: 1.5rem;
+                padding: 5px;
+            }
+        }
+
+        .banner-ad {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .banner-ad img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .carousel {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            animation: slide 20s linear infinite;
+        }
+        .carousel-slide {
+            min-width: 250px;
+            height: 100px;
+            margin-right: 0px;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Responsive design for tablets */
+        @media (max-width: 768px) {
+            .carousel-slide {
+                min-width: 200px; /* Adjust the width for tablets */
+                margin-right: 15px;
+            }
+        }
+
+        /* Responsive design for mobile phones */
+        @media (max-width: 480px) {
+            .carousel-track {
+                animation: slideMobile 40s linear infinite;
+            }
+            .carousel-slide {
+                min-width: 100%; /* Full width for mobile devices */
+                margin-right: 0;
+            }
+
+            @keyframes slideMobile {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+        }
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            color: #fff;
+            background: #333;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            background: #ffa500;
+            transform: scale(1.1);
+        }
+
+        /* Botão Voltar ao Topo */
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: none;
+            z-index: 1000;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        #back-to-top:hover {
+            background: #ffa500;
+            transform: scale(1.1);
+        }
+
+        #back-to-top i {
+            font-size: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                display: none;
+                width: 100%;
+                height: 100vh;
+                background: #333;
+                position: absolute;
+                top: 0px;
+                left: 0;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+                font-size: 30px;
+                line-height: 60px;
+            }
+
+            .nav-links.active a:hover {
+                background-color: #cbcbcb;
+                padding: 10px 30px;
+                color: #333;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .burger.toggle {
+                display: none;
+            }
+
+            .logo {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .news-section {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .news-article {
+                margin: 0 auto;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .partners-section {
+                flex-direction: column;
+            }
+        }
+
+        .whatsapp-button {
+            position: fixed;
+            bottom: 65px;
+            right: 20px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+            z-index: 1000;
+        }
+
+        .whatsapp-button img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .whatsapp-button:hover {
+            animation: shake 0.3s;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1 data-aos="flip-up">Noticias</h1>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="noticias.html">Noticias</a></li>
+                <li><a href="tecnologia.html">Tecnologia</a></li>
+                <li><a href="arte.html">Arte</a></li>
+                <li><a href="design.html">Design</a></li>
+            </ul>
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1 data-aos="fade-up">Bem Vindo!!!</h1>
+                <p data-aos="fade-up">Confira as últimas notícias e novidades.</p>
+            </div>
+        </section>
+
+        <section class="carousel">
+            <div id="carousel-inner" class="carousel-inner">
+                <img src="img/topo_noticias/topo_noticias_01.jpg" alt="Carousel Image 1">
+                <img src="img/topo_noticias/topo_noticias_02.jpg" alt="Carousel Image 2">
+                <img src="img/topo_noticias/topo_noticias_03.jpg" alt="Carousel Image 3">
+                <img src="img/topo_noticias/topo_noticias_04.jpg" alt="Carousel Image 4">
+                <img src="img/topo_noticias/topo_noticias_05.jpg" alt="Carousel Image 5">
+                
+            </div>
+            <div class="carousel-controls">
+                <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
+                <button class="carousel-control next" onclick="nextSlide()">&#10095;</button>
+            </div>
+        </section>
+        <section class="news-section">
+            <div class="news-articles">
+                <article class="news-article">
+                    <img src="img/noticias_01.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">O Impacto da Inteligência Artificial no Design Gráfico</h2>
+                    <p data-aos="fade-up">A Inteligência Artificial (IA) tem revolucionado diversos setores, e o design gráfico não é uma exceção...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A Inteligência Artificial (IA) tem revolucionado diversos setores, e o design gráfico não é uma exceção. Ferramentas de IA estão transformando a forma como designers criam, editam e aperfeiçoam suas obras, oferecendo novas possibilidades e ampliando os horizontes criativos. Hoje, algoritmos avançados são capazes de analisar tendências, gerar paletas de cores e até mesmo produzir layouts completos em questão de segundos, proporcionando aos designers uma base sólida para começar o trabalho e agilizar processos que antes demandavam horas de dedicação.</p><br>
+
+                        <p>Além da velocidade, a IA trouxe um nível de personalização sem precedentes ao design gráfico. Com a capacidade de analisar dados em massa, como preferências do usuário e comportamentos de consumo, as ferramentas de IA podem gerar designs altamente personalizados que se alinham com os gostos e necessidades de públicos específicos. Isso significa que marcas podem alcançar seus consumidores de maneira mais eficaz, criando experiências visuais únicas e envolventes que fortalecem a conexão com o público.</p><br>
+
+                        <p>No entanto, a IA no design gráfico não se limita apenas à automação e personalização. Ela também está desempenhando um papel crucial na experimentação criativa. Ao simular variações infinitas de um design ou ao criar padrões e formas que desafiam a lógica humana, a IA permite que designers explorem territórios estéticos inexplorados. Essa colaboração entre homem e máquina tem o potencial de gerar obras inovadoras que misturam a intuição humana com a precisão algorítmica, abrindo caminho para novas tendências visuais.</p><br>
+
+                        <p>Por outro lado, a crescente presença da IA no design gráfico levanta questões éticas e profissionais. Enquanto alguns temem que a automação possa levar à diminuição de empregos na área, outros acreditam que a IA pode ser vista como uma ferramenta poderosa que libera os designers de tarefas repetitivas, permitindo-lhes focar em aspectos mais estratégicos e criativos de seu trabalho. A verdadeira questão reside em como a indústria irá se adaptar a essas mudanças, encontrando um equilíbrio saudável entre tecnologia e talento humano.</p><br>
+
+                        <p>No futuro, o impacto da Inteligência Artificial no design gráfico promete ser ainda mais profundo. À medida que as tecnologias de IA continuam a evoluir, podemos esperar um aumento na colaboração entre humanos e máquinas, potencializando a criatividade e a eficiência de maneiras que ainda não conseguimos imaginar. Em vez de temer a mudança, o desafio para os profissionais do design é abraçar essas novas ferramentas como parceiras, aproveitando ao máximo suas capacidades para criar experiências visuais impactantes, relevantes e inovadoras.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/noticias_02.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">Design e a Sustentabilidade</h2>
+                    <p data-aos="fade-up">O design desempenha um papel fundamental na construção de um futuro mais sustentável...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>O design desempenha um papel fundamental na construção de um futuro mais sustentável. Em um mundo onde os recursos naturais são finitos e as mudanças climáticas se tornam uma preocupação cada vez mais urgente, o design sustentável surge como uma abordagem essencial para repensar produtos, serviços e sistemas. Trata-se de criar soluções que minimizem impactos ambientais, promovam o uso eficiente de recursos e considerem o ciclo de vida completo dos materiais, desde a extração até o descarte.</p><br>
+
+                        <p>Um dos principais aspectos do design sustentável é a escolha criteriosa de materiais. Designers estão explorando alternativas mais ecológicas, como o uso de matérias-primas recicladas, biodegradáveis ou de fontes renováveis. Isso reduz a dependência de recursos não renováveis e minimiza a pegada de carbono. Além disso, há um movimento crescente em direção ao design de produtos modulares e desmontáveis, que facilita a reciclagem e o reuso, prolongando a vida útil dos objetos e diminuindo a geração de resíduos.</p><br>
+
+                        <p>A sustentabilidade no design também envolve uma mudança de mentalidade em relação ao consumo. Em vez de incentivar a produção em massa e o descarte rápido, o design sustentável promove o conceito de consumo consciente, onde a durabilidade, a reparabilidade e a atemporalidade se tornam critérios importantes. Designers estão criando produtos que não apenas resistem ao teste do tempo, mas que também carregam significados mais profundos, valorizando a história, a cultura e a identidade local, o que fortalece o vínculo entre consumidores e suas aquisições.</p><br>
+
+                        <p>Além dos aspectos tangíveis, o design sustentável também se preocupa com o impacto social e econômico. Ele visa criar soluções que beneficiem não apenas o meio ambiente, mas também as comunidades locais e os trabalhadores envolvidos na cadeia produtiva. Práticas como o comércio justo, a produção local e o respeito aos direitos trabalhistas são fundamentais para garantir que o design sustentável seja verdadeiramente holístico, atendendo aos três pilares da sustentabilidade: ambiental, social e econômico.</p><br>
+
+                        <p>No entanto, o caminho para um design realmente sustentável ainda é desafiador. Requer uma colaboração interdisciplinar entre designers, engenheiros, cientistas e gestores, além de uma mudança de paradigmas nos mercados e nas cadeias produtivas. A conscientização do consumidor também é crucial para que as escolhas sustentáveis sejam valorizadas e apoiadas. O futuro do design está, sem dúvida, atrelado à sua capacidade de se adaptar e inovar em direção a práticas mais sustentáveis, criando soluções que respeitem os limites do planeta e promovam um estilo de vida mais consciente e equilibrado.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/noticias_03.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">A importância da acessibilidade no design.</h2>
+                    <p data-aos="fade-up">A acessibilidade no design é essencial para garantir que todas as pessoas, independentemente de suas limitações físicas, sensoriais ou cognitivas, possam utilizar produtos e serviços digitais de forma eficaz e inclusiva...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A acessibilidade no design é essencial para garantir que todas as pessoas, independentemente de suas limitações físicas, sensoriais ou cognitivas, possam utilizar produtos e serviços digitais de forma eficaz e inclusiva. Ao projetar pensando em acessibilidade, os designers criam interfaces que atendem a uma gama mais ampla de usuários, promovendo equidade e participação plena na sociedade. Isso não apenas melhora a experiência de usuários com deficiências, mas também beneficia pessoas em diversas situações, como idosos, indivíduos com pouca familiaridade tecnológica ou até aqueles em ambientes com restrições temporárias, como baixa iluminação ou ruído.</p><br>
+
+                        <p>Um dos principais pilares da acessibilidade no design é a criação de interfaces que sejam intuitivas e flexíveis. Recursos como textos alternativos para imagens, legendas em vídeos e estruturas de navegação claras tornam o conteúdo mais acessível para pessoas com deficiências visuais e auditivas. Além disso, o uso de cores com contraste adequado e fontes legíveis melhora a experiência de leitura e interação para todos os públicos, permitindo uma navegação mais confortável e sem barreiras.</p><br>
+
+                        <p>A acessibilidade vai além de uma necessidade moral; é também um requisito legal em muitos países. Leis como a ADA (Americans with Disabilities Act) nos Estados Unidos e o Estatuto da Pessoa com Deficiência no Brasil garantem que produtos e serviços digitais sejam acessíveis, estabelecendo diretrizes específicas que devem ser seguidas. Empresas que negligenciam essas diretrizes podem enfrentar não só penalidades legais, mas também um impacto negativo na reputação e uma perda significativa de público.</p><br>
+
+                        <p>Outro aspecto importante é o impacto positivo que a acessibilidade pode ter no SEO (Search Engine Optimization). Ao incluir descrições de texto para imagens, estruturar o conteúdo de forma semântica e otimizar a navegação, os sites se tornam mais bem indexados pelos motores de busca, aumentando a visibilidade e a acessibilidade digital. O design acessível, portanto, não é apenas uma prática ética e inclusiva, mas também estratégica para o crescimento e sucesso de um negócio no ambiente digital.</p><br>
+
+                        <p>Em suma, a acessibilidade no design é um investimento que gera resultados tangíveis e intangíveis. Ela promove a inclusão social, cumpre requisitos legais e melhora a experiência de todos os usuários, ao mesmo tempo em que otimiza a performance de sites e plataformas. Adotar essa abordagem desde o início do processo de design é um passo essencial para criar produtos digitais mais eficazes, modernos e sustentáveis.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/noticias_04.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">Metaverso e Design: Criando Espaços Virtuais</h2>
+                    <p data-aos="fade-up">O conceito de metaverso vem transformando a maneira como interagimos com o mundo digital, levando o design para novas fronteiras de inovação e criatividade...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>O conceito de metaverso vem transformando a maneira como interagimos com o mundo digital, levando o design para novas fronteiras de inovação e criatividade. No metaverso, o design não se limita a interfaces 2D; ele envolve a criação de ambientes tridimensionais imersivos, onde os usuários podem navegar, interagir e até construir suas próprias experiências. Isso exige dos designers um pensamento profundo sobre como projetar espaços virtuais que não só sejam visualmente atraentes, mas também funcionais e intuitivos, oferecendo experiências ricas e envolventes.</p><br>
+
+                        <p>No metaverso, o design transcende as telas convencionais e assume um papel de arquitetura digital. Os espaços virtuais precisam ser pensados de maneira a proporcionar uma sensação de presença e interação realista, com elementos como profundidade, iluminação, texturas e som contribuindo para a imersão do usuário. Além disso, a ergonomia digital — como a facilidade de movimentação e a clareza na navegação — é fundamental para garantir que as interações no ambiente sejam fluidas e naturais, evitando desconfortos e garantindo uma experiência agradável.</p><br>
+
+                        <p>Um dos grandes desafios no design de espaços virtuais é criar ambientes inclusivos e acessíveis para todos. Assim como no design tradicional, é crucial que os espaços no metaverso sejam projetados para uma diversidade de usuários, com diferentes habilidades e preferências. Isso pode incluir desde ajustes de iluminação e contraste para usuários com deficiências visuais até opções de navegação alternativa para aqueles com mobilidade limitada. A inclusão digital no metaverso será determinante para garantir que essa nova dimensão virtual seja realmente acessível e democrática.</p><br>
+
+                        <p>A personalização é outra característica essencial no design para o metaverso. Nesse novo universo, os usuários esperam não apenas interagir com o ambiente, mas moldá-lo de acordo com seus gostos e necessidades. Dessa forma, os designers precisam criar estruturas flexíveis, permitindo que as pessoas adaptem e personalizem suas experiências, desde a escolha de avatares e roupas até a modificação de espaços e objetos virtuais. Isso eleva o design a um nível colaborativo, em que os usuários se tornam co-criadores dos ambientes em que habitam.</p><br>
+
+                        <p>O futuro do design no metaverso é vasto e cheio de oportunidades. À medida que a tecnologia de realidade virtual e aumentada avança, o potencial para criar experiências únicas e interativas só cresce. Designers terão um papel central na definição de como esses espaços virtuais serão explorados, desde o entretenimento até o trabalho, educação e socialização. Criar espaços no metaverso não é apenas sobre estética, mas sobre construir novas formas de interação humana em ambientes digitais inovadores e dinâmicos.</p><br>
+                    </div>
+                </article>
+                <article class="news-article">
+                    <img src="img/noticias_05.jpg" alt="Notícia 1">
+                    <h2 data-aos="fade-up">Redefinindo a Identidade de Marcas: O Rebranding da Microsoft
+                    </h2>
+                    <p data-aos="fade-up">A Microsoft, uma das maiores empresas de tecnologia do mundo, recentemente passou por um rebranding significativo, atualizando seu logotipo e identidade visual...</p>
+                    <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                    <div class="extraContent">
+                        <p>A Microsoft, uma das maiores empresas de tecnologia do mundo, recentemente passou por um rebranding significativo, atualizando seu logotipo e identidade visual. Esse movimento faz parte de uma estratégia mais ampla para reposicionar a empresa como líder em inovação, inclusão e sustentabilidade no setor de tecnologia.</p><br>
+
+                        <p>O novo logotipo da Microsoft mantém a familiaridade da marca, mas com um design mais moderno e minimalista, refletindo a evolução da empresa. A identidade visual foi simplificada para comunicar clareza e acessibilidade, valores que a Microsoft quer associar a seus produtos e serviços.
+                        </p><br>
+
+                        <p>Este rebranding é também uma resposta à necessidade de permanecer relevante em um mercado de tecnologia que está em constante mudança. Ao redesenhar sua identidade, a Microsoft está se posicionando como uma empresa que valoriza tanto a tradição quanto a inovação, ao mesmo tempo em que busca atrair uma nova geração de consumidores e desenvolvedores. Esse movimento destaca como o rebranding pode ser uma ferramenta poderosa para as empresas se adaptarem e prosperarem em um ambiente competitivo.
+                        </p><br>
+
+                        <p>Esses tópicos abrangem algumas das questões mais críticas e inovadoras no campo do design atualmente, refletindo as profundas mudanças e os desafios que os profissionais da área enfrentam.
+                        </p><br>
+                </article>
+                <!-- Continue com os outros artigos da mesma maneira -->
+            </div>
+
+            <aside class="sidebar">
+                <div class="widget">
+                    <h3 data-aos="fade-up">Sobre Nós</h3>
+                    <p data-aos="fade-up">Bem-vindo ao seu portal de notícias completo e confiável, onde a informação de qualidade é prioridade...</p>
+                </div>
+                <div class="widget">
+                    <h3 data-aos="fade-up">Publicidade</h3><br>
+                    <img src="img/banner_asside_01.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_02.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_03.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_04.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_05.jpg" alt="Publicidade">
+                    <img src="img/banner_asside_06.jpg" alt="Publicidade">
+                    <!-- Continue com outros conteúdos da sidebar -->
+                </div>
+                <div class="widget">
+                    <h3 data-aos="fade-up">Artigos Relevantes</h3>
+                    <p data-aos="fade-up">Artigo_01</p>
+                    <p data-aos="fade-up">Artigo_02</p>
+                    <p data-aos="fade-up">Artigo_03</p>
+                    <p data-aos="fade-up">Artigo_04</p>
+                    <p data-aos="fade-up">Artigo_05</p>
+                    <p data-aos="fade-up">Artigo_06</p>
+                    <p data-aos="fade-up">Artigo_07</p>
+                </div>
+            </aside>
+        </section>
+
+        <section class="banner-ad">
+        <img src="img/banner_gif_01.gif" alt="Banner Publicitário">
+        </section>
+
+        <!-- Seção do Carrossel infinito -->
+        <section class="partners-section">
+            <div class="carousel">
+                <div class="carousel-track">
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <!-- Duplicate slides for smooth looping -->
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_01.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_03.jpg" alt="Placeholder Image 5">
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+                    </div>
+                </div>
+            </div>
+            <!-- Continue com outros parceiros -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="current-year"></span> Portal de Notícias.</p>
+        <div class="social-icons">
+            <a href="#" class="fab fa-tiktok"></a>
+            <a href="#" class="fab fa-youtube"></a>
+            <a href="#" class="fab fa-instagram"></a>
+            <a href="#" class="fab fa-facebook"></a>
+        </div>
+
+        <div class="whatsapp-button" onclick="window.open('https://wa.me/71983443744', '_blank');">
+            <img src="img/icons8-whatsapp-94.png" alt="WhatsApp">
+        </div>
+
+        <button id="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+
+    </footer>
+
+    <script>
+        // Burger Menu Toggle
+        const burger = document.querySelector('.burger');
+        const navLinks = document.querySelector('.nav-links');
+
+        burger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            burger.classList.toggle('toggle');
+        });
+
+        // Hide burger button when menu is active
+        const observer = new MutationObserver(() => {
+            if (navLinks.classList.contains('active')) {
+                burger.style.display = 'none';
+            } else {
+                burger.style.display = 'flex';
+            }
+        });
+
+        observer.observe(navLinks, { attributes: true });
+
+        // Carousel Functionality
+        let slideIndex = 0;
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.carousel-inner img');
+            if (index >= slides.length) slideIndex = 0;
+            if (index < 0) slideIndex = slides.length - 1;
+            const offset = -slideIndex * 100 + '%';
+            document.getElementById('carousel-inner').style.transform = `translateX(${offset})`;
+        }
+
+        function nextSlide() {
+            slideIndex++;
+            showSlide(slideIndex);
+        }
+
+        function prevSlide() {
+            slideIndex--;
+            showSlide(slideIndex);
+        }
+
+        // Auto-slide every 3 seconds
+        setInterval(nextSlide, 3000);
+
+        // Botão Voltar ao Topo
+        const backToTopButton = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 200) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Set current year in footer
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Expandir e Retrair texto do botão "Saiba Mais"
+        function toggleContent(button) {
+            const content = button.nextElementSibling;
+            if (content.style.display === 'none' || content.style.display === '') {
+                content.style.display = 'block';
+                button.textContent = 'Saiba Menos';
+            } else {
+                content.style.display = 'none';
+                button.textContent = 'Saiba Mais';
+            }
+        }
+    </script>
+    <script>AOS.init();</script>
+</body>
+</html>
