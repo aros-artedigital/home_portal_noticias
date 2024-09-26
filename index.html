@@ -31,7 +31,7 @@
 
         header {
             /*background: #ff0000;*/
-            background-image: linear-gradient(to left, rgb(133,32,32), rgb(255, 64, 64), rgb(133, 32, 32));
+            background-image: linear-gradient(to left, #930000, #ff0000, #ff7700);
             background-size: 500% 100%;
             animation: degrade-animado 3s infinite alternate;
             color: #fff;
@@ -256,19 +256,17 @@
         }
         .carousel-track {
             display: flex;
-            gap: 10px;
-            animation: slide 60s linear infinite;
-            will-change: transform; /* Improves performance */
+            animation: slide 20s linear infinite;
         }
         .carousel-slide {
             min-width: 250px;
             height: 100px;
+            margin-right: 0px;
         }
         .carousel-slide img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 5px;
         }
 
         @keyframes slide {
@@ -276,24 +274,26 @@
                 transform: translateX(0);
             }
             100% {
-                transform: translateX(-100%); /* Moves exactly half the width of the total slides */
+                transform: translateX(-100%);
             }
         }
 
         /* Responsive design for tablets */
         @media (max-width: 768px) {
             .carousel-slide {
-                min-width: 200px;
+                min-width: 200px; /* Adjust the width for tablets */
+                margin-right: 15px;
             }
         }
 
         /* Responsive design for mobile phones */
         @media (max-width: 480px) {
             .carousel-track {
-                animation: slideMobile 10s linear infinite;
+                animation: slideMobile 60s linear infinite;
             }
             .carousel-slide {
-                min-width: 100%;
+                min-width: 100%; /* Full width for mobile devices */
+                margin-right: 0;
             }
 
             @keyframes slideMobile {
@@ -304,70 +304,24 @@
                     transform: translateX(-100%);
                 }
             }
-
-            .carousel {
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-            display: none;
         }
-        .carousel-track {
+        .partners-section {
             display: flex;
-            gap: 10px;
-            animation: slide 60s linear infinite;
-            will-change: transform; /* Improves performance */
-            display: none;
-        }
-        .carousel-slide {
-            min-width: 250px;
-            height: 100px;
-            display: none;
-        }
-        .carousel-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 5px;
-            display: none;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
         }
 
-        @keyframes slide {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-100%); /* Moves exactly half the width of the total slides */
-            }
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
         }
 
-        /* Responsive design for tablets */
-        @media (max-width: 768px) {
-            .carousel-slide {
-                min-width: 200px;
-            }
-        }
-
-        /* Responsive design for mobile phones */
-        @media (max-width: 480px) {
-            .carousel-track {
-                animation: slideMobile 10s linear infinite;
-                display: none;
-            }
-            .carousel-slide {
-                min-width: 100%;
-                display: none;
-            }
-
-            @keyframes slideMobile {
-                0% {
-                    transform: translateX(0);
-                }
-                100% {
-                    transform: translateX(-100%);
-                }
-            }
-        }
-        
+        .partners-section img{
+            width: 150px;
+            height: auto;
         }
 
         footer {
@@ -376,6 +330,14 @@
             text-align: center;
             padding: 2rem 0;
             margin-top: 2rem;
+        }
+
+        a{
+            color: #838383;
+        }
+
+        a:hover{
+            color: #ffa500;
         }
 
         .social-icons {
@@ -451,15 +413,10 @@
             }
 
             .nav-links.active a:hover {
-                background-color: #922424;
+                background-color: #428b25;
                 padding: 10px 30px;
                 color: #b2b2b2;
                 box-shadow: 10px 10px 50px #000000;
-            }
-
-            .nav-links li {
-                margin: 1rem 0;
-                margin-top: 0;
             }
 
             .burger {
@@ -488,6 +445,9 @@
                 display: none;
             }
 
+            .partners-section {
+                flex-direction: column;
+            }
         }
 
         .whatsapp-button {
@@ -532,11 +492,68 @@
             100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
 
+        .carousel {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            gap: 10px;
+            animation: slide 60s linear infinite;
+            will-change: transform; /* Improves performance */
+        }
+        .carousel-slide {
+            min-width: 250px;
+            height: 100px;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%); /* Moves exactly half the width of the total slides */
+            }
+        }
+
+        /* Responsive design for tablets */
+        @media (max-width: 768px) {
+            .carousel-slide {
+                min-width: 200px;
+            }
+        }
+
+        /* Responsive design for mobile phones */
+        @media (max-width: 480px) {
+            .carousel-track {
+                animation: slideMobile 10s linear infinite;
+            }
+            .carousel-slide {
+                min-width: 100%;
+            }
+
+            @keyframes slideMobile {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+        }
+
     </style>
 </head>
 <body>
     <header>
-        <h1 data-aos="flip-up">Portal de Notícias</h1>
+        <h1 data-aos="flip-up">DesignCult</h1>
         <nav>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -568,8 +585,8 @@
                 <img src="img/topo_portal/topo_03.jpg" alt="Carousel Image 3">
                 <img src="img/topo_portal/topo_04.jpg" alt="Carousel Image 4">
                 <img src="img/topo_portal/topo_05.jpg" alt="Carousel Image 5">
-                <img src="img/topo_portal/topo_06.jpg" alt="Carousel Image 6">
-                <img src="img/topo_portal/topo_07.jpg" alt="Carousel Image 7">
+                
+                
             </div>
             <div class="carousel-controls">
                 <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
@@ -579,7 +596,7 @@
         <section class="news-section">
             <div class="news-articles">
                 <article class="news-article">
-                    <img src="img/artigo_01.jpg" alt="Notícia 1">
+                    <img src="img/artigo_01.jpg" alt="artigo 1">
                     <h2 data-aos="fade-up">Semana do Consumidor: Aproveite Ofertas Exclusivas e Imperdíveis!</h2>
                     <p data-aos="fade-up">Prepare-se para a Semana do Consumidor! É o momento perfeito para aproveitar ofertas incríveis e benefícios exclusivos...</p>
                     <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
@@ -596,7 +613,7 @@
                     </div>
                 </article>
                 <article class="news-article">
-                    <img src="img/artigo_02.jpg" alt="Notícia 1">
+                    <img src="img/artigo_02.jpg" alt="artigo 2">
                     <h2 data-aos="fade-up">Semana do Consumidor: Valorize o Comércio Local e Aproveite Grandes Ofertas!</h2>
                     <p data-aos="fade-up">Prepare-se para a Semana do Consumidor! É o momento perfeito para aproveitar ofertas incríveis e benefícios exclusivos...</p>
                     <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
@@ -613,7 +630,7 @@
                     </div>
                 </article>
                 <article class="news-article">
-                    <img src="img/artigo_03.jpg" alt="Notícia 1">
+                    <img src="img/artigo_03.jpg" alt="artigo 3">
                     <h2 data-aos="fade-up">Potencialize o Seu Negócio com a Agência de Marketing que Transforma Resultados!</h2>
                     <p data-aos="fade-up">Eleve o nivel da sua comunicação com o seu cliente.Conte com nossa ajuda para isso...</p>
                     <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
@@ -630,7 +647,7 @@
                     </div>
                 </article>
                 <article class="news-article">
-                    <img src="img/artigo_04.jpg" alt="Notícia 1">
+                    <img src="img/artigo_04.jpg" alt="artigo 4">
                     <h2 data-aos="fade-up">Semana do Consumidor: Super Vantagens que Você Não Pode Perder!</h2>
                     <p data-aos="fade-up">Prepare-se para a Semana do Consumidor! É o momento perfeito para aproveitar as super ofertas e os benefícios exclusivos...</p>
                     <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
@@ -647,7 +664,7 @@
                     </div>
                 </article>
                 <article class="news-article">
-                    <img src="img/artigo_05.jpg" alt="Notícia 1">
+                    <img src="img/artigo_05.jpg" alt="artigo 5">
                     <h2 data-aos="fade-up">Novembro Azul: A Importância da Prevenção e do Cuidado com a Saúde do Homem</h2>
                     <p data-aos="fade-up">Atenção homens chegou a oportunidade de cuidar e dar uma atenção maior a sua saude. SE LIGUE!...</p>
                     <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
@@ -661,7 +678,6 @@
                         <p>Muitos homens ainda resistem à realização dos exames por medo ou preconceito, mas o Novembro Azul nos lembra que cuidar da saúde é um ato de coragem. Superar esses receios e preconceitos é um passo fundamental para garantir uma vida mais longa e saudável. Neste mês, incentive os homens ao seu redor a cuidar da sua saúde, porque a prevenção é o melhor caminho.</p><br>
 
                         <p>Vamos juntos neste Novembro Azul espalhar essa mensagem de conscientização, cuidado e prevenção. Afinal, quanto mais falamos sobre saúde, mais diminuímos o estigma e mais vidas podemos salvar. Valorize a vida, cuide-se, faça seus exames e viva plenamente!</p><br>
-                    </div>
                 </article>
                 <!-- Continue com os outros artigos da mesma maneira -->
             </div>
@@ -681,7 +697,7 @@
                     <img src="img/banner_asside_06.jpg" alt="Publicidade">
                     <!-- Continue com outros conteúdos da sidebar -->
                 </div>
-                <div class="widget">
+                 <div class="widget">
                     <h3 data-aos="fade-up">Artigos Relevantes</h3>
 
                     <p data-aos="fade-up"><a style="text-decoration: none;" href="https://www.renderforest.com/pt/blog/graphic-design-software" target="_blank" rel="noopener noreferrer">33 Softwares Incríveis de Design Gráfico</a></p>
@@ -706,10 +722,11 @@
         </section>
 
         <section class="banner-ad">
-            <img src="img/banner_gif_01.gif" alt="Banner Publicitário">
+        <img src="img/banner_gif_01.gif" alt="Banner Publicitário">
         </section>
-        
+    
     </main>
+
     <footer>
         <div class="social-icons">
             <a href="https://github.com/aros-artedigital" class="fab fa-github"></a>
@@ -717,12 +734,13 @@
             <a href="https://www.instagram.com/aros_artedigital/" class="fab fa-instagram"></a>
             <a href="https://www.behance.net/aros_artedigital" class="fab fa-behance"></a>
         </div>
-        <div class="whatsapp-button" onclick="window.open('https://wa.me/71983443744', '_blank');">
+
+        <div class="whatsapp-button" onclick="window.open('https://wa.me/71983443744','_blank');">
             <img src="img/icons8-whatsapp-94.png" alt="WhatsApp">
         </div>
 
         <button id="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
-        <p>&copy; <span id="current-year"></span> por <a href="https://arosartedigital.netlify.app/" target="_blank" style="text-decoration: none;">aros_artedigital</a></p>
+        <p>&copy; <span id="current-year"></span> por <a href="https://arosartedigital2024.netlify.app/" target="_blank" style="text-decoration: none;">aros_artedigital</a></p>
     </footer>
 
     <script>
