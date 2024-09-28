@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paginação</title>
+  
+  <style>
+    /* Reset CSS */
+    * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilo Global */
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            /*background: #ff0000;*/
+            background-image: linear-gradient(to left, #870093, #ff00ee, #6f00be);
+            background-size: 500% 100%;
+            animation: degrade-animado 3s infinite alternate;
+            color: #fff;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        @keyframes degrade-animado {
+           
+            0%{
+                background-position-x: 0%;
+            }
+
+            100%{
+                background-position-x: 100%;
+            }
+
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+        }
+
+        .nav-links li {
+            margin-left: 1rem;
+        }
+
+        .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffa500;
+        }
+
+        .burger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 3px;
+            background: #fff;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .hero {
+            background: url('img/header_04.jpg') no-repeat center center/cover;
+            height: 50vh;
+            width: 100%;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 70px; /* Ajuste a altura da margem conforme necessário */
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            text-shadow: 10px 10px 20px #333;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            text-shadow: 10px 10px 20px #333;
+        }
+
+        .news-section {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .news-article {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        a{
+            color: #9b9b9b;
+        }
+
+        a:hover{
+            color: #000000;
+        }
+
+        .news-article img {
+            width: 100%;
+            height: auto;
+        }
+
+        .news-article h2 {
+            margin: 1rem 0;
+            line-height: 3.5vh;
+            font-size: 3.5vh;
+        }
+
+        .news-article p {
+            font-size: 2.5vh;
+        }
+
+        #expandButton {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+        }
+
+        #expandButton:hover {
+            background-color: #0056b3;
+            box-shadow: 0 8px 12px rgba(0, 86, 179, 0.3);
+            transform: translateY(-2px);
+        }
+
+    .pagination-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pagination {
+      display: inline-block;
+    }
+
+    .pagination a {
+      color: #333;
+      float: left;
+      padding: 8px 16px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+      margin: 0 4px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .pagination a:hover {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    .pagination a.active {
+      background-color: #007BFF;
+      color: white;
+      border: 1px solid #007BFF;
+    }
+
+    @media screen and (max-width: 600px) {
+      .pagination a {
+        padding: 6px 12px;
+      }
+    }
+
+    .extraContent {
+            display: none;
+            margin-top: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        .sidebar .widget {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .carousel-inner {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-inner img {
+            width: 100%;
+            flex-shrink: 0;
+        }
+
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-control {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-control {
+                font-size: 1.5rem;
+                padding: 5px;
+            }
+        }
+
+        .banner-ad {
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .banner-ad img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .carousel {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            animation: slide 20s linear infinite;
+        }
+        .carousel-slide {
+            min-width: 250px;
+            height: 100px;
+            margin-right: 0px;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Responsive design for tablets */
+        @media (max-width: 768px) {
+            .carousel-slide {
+                min-width: 200px; /* Adjust the width for tablets */
+                margin-right: 15px;
+            }
+        }
+
+        /* Responsive design for mobile phones */
+        @media (max-width: 480px) {
+            .carousel-track {
+                animation: slideMobile 60s linear infinite;
+            }
+            .carousel-slide {
+                min-width: 100%; /* Full width for mobile devices */
+                margin-right: 0;
+            }
+
+            @keyframes slideMobile {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+        }
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .partners-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .partners-section img{
+            width: 150px;
+            height: auto;
+        }
+
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+        }
+
+        a{
+            color: #838383;
+        }
+
+        a:hover{
+            color: #ffa500;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            margin-top: 1rem;
+            font-size: 30px;
+        }
+
+        .social-icons a {
+            color: #fff;
+            background: #333;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 0.5rem;
+            border-radius: 5px;
+            transition: background 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            background: #ffa500;
+            transform: scale(1.1);
+        }
+
+        /* Botão Voltar ao Topo */
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            display: none;
+            z-index: 1000;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        #back-to-top:hover {
+            background: #ffa500;
+            transform: scale(1.1);
+        }
+
+        #back-to-top i {
+            font-size: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                display: none;
+                width: 100%;
+                height: 100vh;
+                background: #333;
+                position: absolute;
+                top: 0px;
+                left: 0;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+                font-size: 30px;
+                line-height: 60px;
+            }
+
+            .nav-links.active a:hover {
+                background-color: #ff0000;
+                padding: 10px 30px;
+                color: #b2b2b2;
+                box-shadow: 10px 10px 50px #000000;
+            }
+
+            .burger {
+                display: flex;
+            }
+
+            .burger.toggle {
+                display: none;
+            }
+
+            .logo {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .news-section {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .news-article {
+                margin: 0 auto;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .partners-section {
+                flex-direction: column;
+            }
+        }
+
+        .whatsapp-button {
+            position: fixed;
+            bottom: 65px;
+            right: 20px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+            z-index: 1000;
+        }
+
+        .whatsapp-button img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .whatsapp-button:hover {
+            animation: shake 0.3s;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .carousel {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            gap: 10px;
+            animation: slide 60s linear infinite;
+            will-change: transform; /* Improves performance */
+        }
+        .carousel-slide {
+            min-width: 250px;
+            height: 100px;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%); /* Moves exactly half the width of the total slides */
+            }
+        }
+
+        /* Responsive design for tablets */
+        @media (max-width: 768px) {
+            .carousel-slide {
+                min-width: 200px;
+            }
+        }
+
+        /* Responsive design for mobile phones */
+        @media (max-width: 480px) {
+            .carousel-track {
+                animation: slideMobile 10s linear infinite;
+            }
+            .carousel-slide {
+                min-width: 100%;
+            }
+
+            @keyframes slideMobile {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+        }
+
+        /* Slide Infinito */
+
+        .carousel {
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            animation: slide 20s linear infinite;
+        }
+        .carousel-slide {
+            min-width: 250px;
+            height: 100px;
+            margin-right: 0px;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes slide {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-150%);
+            }
+        }
+
+        /* Responsive design for tablets */
+        @media (max-width: 768px) {
+            .carousel-slide {
+                min-width: 200px; /* Adjust the width for tablets */
+                margin-right: 15px;
+            }
+        }
+
+        /* Responsive design for mobile phones */
+        @media (max-width: 480px) {
+            .carousel-track {
+                animation: slideMobile 90s linear infinite;
+            }
+            .carousel-slide {
+                min-width: 100%; /* Full width for mobile devices */
+                margin-right: 0;
+            }
+
+            @keyframes slideMobile {
+                0% {
+                    transform: translateX(0);
+                }
+                100% {
+                    transform: translateX(-400%);
+                }
+            }
+        }
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 data-aos="flip-up">Paginação</h1>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="noticias.html">Noticias</a></li>
+            <li><a href="tecnologia.html">Tecnologia</a></li>
+            <li><a href="arte.html">Arte</a></li>
+            <li><a href="design.html">Design</a></li>
+        </ul>
+        <div class="burger">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="hero-content">
+            <h1 data-aos="fade-up">Bem Vindo!!!</h1>
+            <p data-aos="fade-up">Confira as últimas notícias e novidades.</p>
+        </div>
+    </section>
+
+    <section class="carousel">
+        <div id="carousel-inner" class="carousel-inner">
+            <img src="img/topo_portal/topo_01.jpg" alt="Carousel Image 1">
+            <img src="img/topo_portal/topo_02.jpg" alt="Carousel Image 2">
+            <img src="img/topo_portal/topo_03.jpg" alt="Carousel Image 3">
+            <img src="img/topo_portal/topo_04.jpg" alt="Carousel Image 4">
+            <img src="img/topo_portal/topo_05.jpg" alt="Carousel Image 5">
+            
+            
+        </div>
+        <div class="carousel-controls">
+            <button class="carousel-control prev" onclick="prevSlide()">&#10094;</button>
+            <button class="carousel-control next" onclick="nextSlide()">&#10095;</button>
+        </div>
+    </section>
+    <section class="news-section">
+        <div class="news-articles">
+            <article class="news-article">
+                <img src="img/artigo_01.jpg" alt="artigo 1">
+                <h2 data-aos="fade-up">Semana do Consumidor: Aproveite Ofertas Exclusivas e Imperdíveis!</h2>
+                <p data-aos="fade-up">Prepare-se para a Semana do Consumidor! É o momento perfeito para aproveitar ofertas incríveis e benefícios exclusivos...</p>
+                <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                <div class="extraContent">
+                    <p>Preparamos uma semana especial para você, nosso cliente, com descontos incríveis em uma ampla variedade de produtos! A partir de hoje, começa a Semana do Consumidor, um evento pensado para oferecer as melhores oportunidades de compra do ano. Este é o momento ideal para adquirir aquele item tão desejado, renovar sua casa ou atualizar seus dispositivos, sempre com a qualidade e confiança que você já conhece.</p><br>
+
+                    <p>Durante toda a semana, você encontrará promoções exclusivas, com descontos de até 50% em todas as categorias: de eletrônicos a moda, de móveis a eletrodomésticos. Além disso, estamos oferecendo frete grátis em compras selecionadas e condições especiais de pagamento, para que você possa parcelar sem juros e levar tudo o que precisa com total tranquilidade.</p><br>
+
+                    <p>Mas as surpresas não param por aí! Teremos ofertas relâmpago todos os dias, com descontos ainda maiores para quem estiver atento às nossas notificações e redes sociais. É a sua chance de garantir aquele super desconto e ainda participar de sorteios exclusivos para os compradores da Semana do Consumidor. Não deixe de conferir nosso site diariamente e aproveitar todas as oportunidades.</p><br>
+
+                    <p>Nossa equipe está preparada para proporcionar a melhor experiência de compra, com atendimento personalizado e suporte dedicado. Caso precise de qualquer informação ou ajuda, não hesite em nos contatar! Estamos prontos para esclarecer suas dúvidas e garantir que você faça as melhores escolhas.</p><br>
+
+                    <p>Não perca tempo e aproveite! A Semana do Consumidor é o momento perfeito para economizar e comprar com inteligência. Visite nosso site, conheça todas as promoções e transforme sua experiência de compra em algo realmente especial. As ofertas são por tempo limitado, então corra e garanta já as suas!</p><br>
+                </div>
+            </article>
+            <article class="news-article">
+                <img src="img/artigo_02.jpg" alt="artigo 2">
+                <h2 data-aos="fade-up">Semana do Consumidor: Valorize o Comércio Local e Aproveite Grandes Ofertas!</h2>
+                <p data-aos="fade-up">Prepare-se para a Semana do Consumidor! É o momento perfeito para aproveitar ofertas incríveis e benefícios exclusivos...</p>
+                <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                <div class="extraContent">
+                    <p>A Semana do Consumidor está começando, e este é o momento perfeito para valorizar o comércio local e fazer a diferença em nossa comunidade! Ao comprar de lojas próximas a você, não só apoia pequenos negócios, como também fortalece a economia da sua cidade, ajudando a manter empregos e promover o crescimento sustentável. Nesta semana, oferecemos condições especiais para que você aproveite ao máximo e ainda contribua para um futuro melhor!</p><br>
+
+                    <p>Durante toda a semana, nossos comerciantes locais estarão com descontos especiais e promoções exclusivas em produtos variados. De roupas e acessórios a itens para o lar, de presentes únicos a delícias artesanais, tudo com aquele atendimento personalizado que só o comércio local pode oferecer. Este é o momento de garantir qualidade, com preços incríveis, e ainda ajudar a fortalecer o nosso bairro!</p><br>
+
+                    <p>Além dos descontos, muitos de nossos lojistas estão oferecendo brindes, sorteios e condições facilitadas de pagamento. Ao comprar localmente, você também aproveita a comodidade de receber seus produtos rapidamente e sem custo adicional de frete, ajudando a reduzir o impacto ambiental e promovendo um consumo mais consciente.</p><br>
+
+                    <p>Apoiar o comércio local é investir na sua própria comunidade. Cada compra que você faz aqui ajuda a manter vivas as tradições e a cultura da sua região, gerando impacto positivo para todos. Converse com os lojistas, conheça as histórias por trás dos produtos e sinta a diferença de ser atendido por quem conhece suas preferências e necessidades.</p><br>
+
+                    <p>Não deixe essa oportunidade passar! Visite as lojas da sua vizinhança, descubra ofertas especiais e transforme suas compras na Semana do Consumidor em um gesto de apoio e fortalecimento da nossa comunidade. Contamos com você para fazer desta semana um grande sucesso para todos!</p><br>
+                </div>
+            </article>
+            <article class="news-article">
+                <img src="img/artigo_03.jpg" alt="artigo 3">
+                <h2 data-aos="fade-up">Potencialize o Seu Negócio com a Agência de Marketing que Transforma Resultados!</h2>
+                <p data-aos="fade-up">Eleve o nivel da sua comunicação com o seu cliente.Conte com nossa ajuda para isso...</p>
+                <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                <div class="extraContent">
+                    <p>Está na hora de levar o seu negócio para o próximo nível, e nós estamos aqui para ajudar! Somos uma agência de marketing comprometida com o sucesso de nossos clientes, oferecendo soluções personalizadas que realmente fazem a diferença. Desde o planejamento estratégico até a execução de campanhas inovadoras, nossa missão é conectar sua marca com o público certo, no momento certo.</p><br>
+
+                    <p>Com uma equipe experiente e apaixonada pelo que faz, desenvolvemos estratégias criativas e eficazes para aumentar a visibilidade, engajamento e vendas do seu negócio. Utilizamos as ferramentas mais modernas e dados precisos para criar campanhas de impacto, seja em redes sociais, SEO, anúncios pagos ou marketing de conteúdo. Estamos sempre um passo à frente, buscando as melhores oportunidades para você se destacar.</p><br>
+
+                    <p>Nosso diferencial está no atendimento próximo e personalizado. Entendemos que cada cliente é único, e por isso trabalhamos lado a lado para compreender suas necessidades e objetivos específicos. Seja qual for o tamanho ou o segmento do seu negócio, criamos um plano sob medida para garantir resultados concretos e mensuráveis, maximizando o retorno sobre o seu investimento.</p><br>
+
+                    <p>Mas não paramos por aí! Oferecemos consultoria contínua para otimizar suas estratégias, análises detalhadas de desempenho e relatórios completos para que você acompanhe cada etapa do crescimento da sua marca. Com transparência, criatividade e dedicação, somos a parceira ideal para transformar desafios em oportunidades.</p><br>
+
+                    <p>Entre em contato conosco hoje mesmo e descubra como podemos alavancar seu negócio com estratégias de marketing inteligentes e inovadoras. Não deixe sua marca passar despercebida no mercado confie na nossa expertise e faça parte dos nossos cases de sucesso!</p><br>
+                </div>
+            </article>
+            <article class="news-article">
+                <img src="img/artigo_04.jpg" alt="artigo 4">
+                <h2 data-aos="fade-up">Semana do Consumidor: Super Vantagens que Você Não Pode Perder!</h2>
+                <p data-aos="fade-up">Prepare-se para a Semana do Consumidor! É o momento perfeito para aproveitar as super ofertas e os benefícios exclusivos...</p>
+                <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                <div class="extraContent">
+                    <p>Chegou o momento mais aguardado do ano para fazer suas compras com muito mais vantagens! A Semana do Consumidor começa agora, e você está convidado a aproveitar ofertas incríveis em diversos produtos que você sempre quis. Com descontos imperdíveis e condições especiais, esta é a chance perfeita para garantir tudo o que você deseja, gastando menos!</p><br>
+
+                    <p>Durante esta semana, você encontrará super vantagens em todas as categorias: de tecnologia a moda, de eletrodomésticos a decoração. Além de descontos que chegam a 70%, estamos oferecendo condições exclusivas de parcelamento sem juros e frete grátis para várias regiões. Tudo isso para facilitar suas compras e fazer seu dinheiro render muito mais!</p><br>
+
+                    <p>E tem mais! Além dos preços especiais, você pode participar de promoções relâmpago diárias, com descontos ainda maiores e prêmios exclusivos para quem comprar durante o evento. Fique de olho em nossas redes sociais e site para não perder nenhuma oferta surpresa e garantir vantagens que você não encontrará em outro lugar!</p><br>
+
+                    <p>A Semana do Consumidor é a oportunidade perfeita para você renovar seu guarda-roupa, equipar sua casa ou investir em novos gadgets. Com a nossa curadoria de produtos, você tem a certeza de encontrar qualidade, variedade e preços imbatíveis. E o melhor: você pode fazer tudo isso de forma rápida, segura e no conforto de sua casa!</p><br>
+
+                    <p>Então, não deixe para depois! Acesse nosso site agora mesmo, explore todas as promoções e aproveite as super vantagens da Semana do Consumidor. Mas corra, porque as ofertas são por tempo limitado e o estoque é limitado! Transforme seus desejos em realidade sem estourar o orçamento e viva uma experiência de compra inesquecível!</p><br>
+                </div>
+            </article>
+            <article class="news-article">
+                <img src="img/artigo_05.jpg" alt="artigo 5">
+                <h2 data-aos="fade-up">Novembro Azul: A Importância da Prevenção e do Cuidado com a Saúde do Homem</h2>
+                <p data-aos="fade-up">Atenção homens chegou a oportunidade de cuidar e dar uma atenção maior a sua saude. SE LIGUE!...</p>
+                <button id="expandButton" onclick="toggleContent(this)">Saiba Mais</button>
+                <div class="extraContent">
+                    <p>Novembro chegou, e com ele, a campanha Novembro Azul, um movimento mundial dedicado à conscientização sobre a saúde do homem, especialmente a prevenção do câncer de próstata. Este é o segundo tipo de câncer mais comum entre os homens, e a detecção precoce é a chave para aumentar as chances de cura e qualidade de vida. Durante todo o mês, destacamos a importância de cuidar da saúde e quebrar tabus sobre exames preventivos.</p><br>
+
+                    <p>A campanha Novembro Azul tem o objetivo de incentivar os homens a realizar exames regulares e a procurar orientação médica sempre que necessário. O diagnóstico precoce do câncer de próstata aumenta em até 95% as chances de cura, tornando essencial a conscientização sobre a realização do exame de toque retal e do exame de PSA a partir dos 50 anos, ou a partir dos 45 anos para aqueles que possuem fatores de risco, como histórico familiar da doença.</p><br>
+
+                    <p>Além disso, o Novembro Azul é um convite para falar sobre a saúde integral do homem. Manter um estilo de vida saudável, com uma dieta balanceada, prática regular de exercícios físicos e a redução do consumo de álcool e tabaco, contribui significativamente para a prevenção não só do câncer de próstata, mas de várias outras doenças. Cuidar da saúde é um gesto de amor consigo mesmo e com as pessoas que nos cercam.</p><br>
+
+                    <p>Muitos homens ainda resistem à realização dos exames por medo ou preconceito, mas o Novembro Azul nos lembra que cuidar da saúde é um ato de coragem. Superar esses receios e preconceitos é um passo fundamental para garantir uma vida mais longa e saudável. Neste mês, incentive os homens ao seu redor a cuidar da sua saúde, porque a prevenção é o melhor caminho.</p><br>
+
+                    <p>Vamos juntos neste Novembro Azul espalhar essa mensagem de conscientização, cuidado e prevenção. Afinal, quanto mais falamos sobre saúde, mais diminuímos o estigma e mais vidas podemos salvar. Valorize a vida, cuide-se, faça seus exames e viva plenamente!</p><br>
+            </article>
+            <!-- Continue com os outros artigos da mesma maneira -->
+        </div>
+    
+        <aside class="sidebar">
+            <div class="widget">
+                <h3 data-aos="fade-up">Sobre Nós</h3>
+                <p data-aos="fade-up">Bem-vindo ao seu portal de notícias completo e confiável, onde a informação de qualidade é prioridade...</p>
+            </div>
+            <div class="widget">
+                <h3 data-aos="fade-up">Publicidade</h3><br>
+                <img src="img/banner_asside_01.jpg" alt="Publicidade">
+                <img src="img/banner_asside_02.jpg" alt="Publicidade">
+                <img src="img/banner_asside_03.jpg" alt="Publicidade">
+                <img src="img/banner_asside_04.jpg" alt="Publicidade">
+                <img src="img/banner_asside_05.jpg" alt="Publicidade">
+                <img src="img/banner_asside_06.jpg" alt="Publicidade">
+                <!-- Continue com outros conteúdos da sidebar -->
+            </div>
+             <div class="widget">
+                <h3 data-aos="fade-up">Artigos Relevantes</h3>
+
+                <p data-aos="fade-up"><a style="text-decoration: none;" href="https://www.renderforest.com/pt/blog/graphic-design-software" target="_blank" rel="noopener noreferrer">33 Softwares Incríveis de Design Gráfico</a></p>
+
+                <p data-aos="fade-up"><a style="text-decoration: none;" href="https://userguiding.com/pt-br/blog/tendencias-design-grafico" target="_blank" rel="noopener noreferrer">15 maiores tendências de design gráfico para 2024</a></p>
+
+                <p data-aos="fade-up"><a style="text-decoration: none;" href="https://wunderlabel.com/pt/blog/detail/tendencias-de-cores-em-2024-o-que-dizem-pantoner-fashion-e-fashion-week/" target="_blank" rel="noopener noreferrer">Tendências de cores em 2024: o que diz a Pantone®</a></p>
+
+                <p data-aos="fade-up"><a style="text-decoration: none;" href="https://revistaarqdesign.com.br/design-grafico-e-realidade-aumentada-uma-nova-fronteira/" target="_blank" rel="noopener noreferrer">Design Gráfico e Realidade Aumentada</a></p>
+
+                <p data-aos="fade-up"><a style="text-decoration: none;" href="https://revistagalileu.globo.com/Tecnologia/noticia/2022/04/nft-como-tecnologia-pode-contribuir-para-producao-artistica.html" target="_blank" rel="noopener noreferrer">NFT: Tecnologia pode contribuir para a produção artística
+                </a></p>
+
+                <p data-aos="fade-up"><a style="text-decoration: none;" href="https://forbes.com.br/forbes-tech/2022/09/design-inclusivo-como-a-tecnologia-pode-tornar-produtos-acessiveis/" target="_blank" rel="noopener noreferrer">Design inclusivo: Tecnologia pode facilidade acessibilidade
+                </a></p>
+
+                <p data-aos="fade-up"><a style="text-decoration: none;" href="https://abra.com.br/artigos/inteligencia-artificial-qual-impacto-pode-causar-nas-artes/" target="_blank" rel="noopener noreferrer">Inteligência artificial: qual impacto pode causar nas artes?
+                </a></p>
+
+            </div>
+        </aside>
+    </section>
+
+    <section class="banner-ad">
+    <img src="img/banner_gif_01.gif" alt="Banner Publicitário">
+    </section>
+
+</main>
+
+
+
+  <!-- Paginação -->
+  <div class="pagination-container">
+    <div class="pagination">
+      <a href="#" id="prev">&laquo;</a>
+      <a href="#" class="page-num active">1</a>
+      <a href="#" class="page-num">2</a>
+      <a href="#" class="page-num">3</a>
+      <a href="#" class="page-num">4</a>
+      <a href="#" class="page-num">5</a>
+      <a href="#" id="next">&raquo;</a>
+    </div>
+  </div>
+  <!-- Slide Infinito -->
+
+  <div class="carousel">
+    <div class="carousel-track">
+        <div class="carousel-slide">
+            <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+        </div>
+
+        <div class="carousel-slide">
+            <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+        </div>
+
+        <div class="carousel-slide">
+            <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+        </div>
+
+        <div class="carousel-slide">
+            <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+        </div>
+
+        <div class="carousel-slide">
+            <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+        </div>
+       
+        <!-- Duplicate slides for smooth looping -->
+        <div class="carousel-slide">
+            <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+        </div>
+
+        <div class="carousel-slide">
+            <img src="img/parceiro_01.jpg" alt="Placeholder Image 1">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_02.jpg" alt="Placeholder Image 2">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_03.jpg" alt="Placeholder Image 3">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_04.jpg" alt="Placeholder Image 4">
+        </div>
+        <div class="carousel-slide">
+            <img src="img/parceiro_05.jpg" alt="Placeholder Image 5">
+        </div>
+        
+    </div>
+</div>
+
+<footer>
+    <div class="social-icons">
+        <a href="https://github.com/aros-artedigital" class="fab fa-github"></a>
+        <a href="https://www.youtube.com/@AdrianoSantos" class="fab fa-youtube"></a>
+        <a href="https://www.instagram.com/aros_artedigital/" class="fab fa-instagram"></a>
+        <a href="https://www.behance.net/aros_artedigital" class="fab fa-behance"></a>
+    </div>
+
+    <div class="whatsapp-button" onclick="window.open('https://wa.me/71983443744','_blank');">
+        <img src="img/icons8-whatsapp-94.png" alt="WhatsApp">
+    </div>
+
+    <button id="back-to-top" onclick="scrollToTop()"><i class="fas fa-arrow-up"></i></button>
+    <p>&copy; <span id="current-year"></span> por <a href="https://arosartedigital2024.netlify.app/" target="_blank" style="text-decoration: none;">aros_artedigital</a></p>
+</footer>
+
+<script>
+    // Burger Menu Toggle
+    const burger = document.querySelector('.burger');
+    const navLinks = document.querySelector('.nav-links');
+
+    burger.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+        burger.classList.toggle('toggle');
+    });
+
+    // Hide burger button when menu is active
+    const observer = new MutationObserver(() => {
+        if (navLinks.classList.contains('active')) {
+            burger.style.display = 'none';
+        } else {
+            burger.style.display = 'flex';
+        }
+    });
+
+    observer.observe(navLinks, { attributes: true });
+
+    // Carousel Functionality
+    let slideIndex = 0;
+
+    function showSlide(index) {
+        const slides = document.querySelectorAll('.carousel-inner img');
+        if (index >= slides.length) slideIndex = 0;
+        if (index < 0) slideIndex = slides.length - 1;
+        const offset = -slideIndex * 100 + '%';
+        document.getElementById('carousel-inner').style.transform = `translateX(${offset})`;
+    }
+
+    function nextSlide() {
+        slideIndex++;
+        showSlide(slideIndex);
+    }
+
+    function prevSlide() {
+        slideIndex--;
+        showSlide(slideIndex);
+    }
+
+    // Auto-slide every 3 seconds
+    setInterval(nextSlide, 3000);
+
+    // Botão Voltar ao Topo
+    const backToTopButton = document.getElementById('back-to-top');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 200) {
+            backToTopButton.style.display = 'block';
+        } else {
+            backToTopButton.style.display = 'none';
+        }
+    });
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Set current year in footer
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Expandir e Retrair texto do botão "Saiba Mais"
+    function toggleContent(button) {
+        const content = button.nextElementSibling;
+        if (content.style.display === 'none' || content.style.display === '') {
+            content.style.display = 'block';
+            button.textContent = 'Saiba Menos';
+        } else {
+            content.style.display = 'none';
+            button.textContent = 'Saiba Mais';
+        }
+    }
+
+    //Paginação
+const pages = document.querySelectorAll('.page-num');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+let currentPage = 0; // Índice da página ativa (começa em 0)
+
+function updatePagination() {
+  // Remove a classe 'active' de todas as páginas
+  pages.forEach(page => page.classList.remove('active'));
+  // Adiciona a classe 'active' na página atual
+  pages[currentPage].classList.add('active');
+}
+
+// Evento do botão 'Avançar'
+next.addEventListener('click', function() {
+  if (currentPage < pages.length - 1) {
+    currentPage++;
+    updatePagination();
+  }
+});
+
+// Evento do botão 'Voltar'
+prev.addEventListener('click', function() {
+  if (currentPage > 0) {
+    currentPage--;
+    updatePagination();
+  }
+});
+
+// Evento para clicar diretamente nos números das páginas
+pages.forEach((page, index) => {
+  page.addEventListener('click', function() {
+    currentPage = index;
+    updatePagination();
+  });
+});
+
+</script>
+<script>AOS.init();</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+  

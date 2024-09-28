@@ -183,6 +183,47 @@
             transform: translateY(-2px);
         }
 
+        /* Paginação */
+
+        .pagination-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pagination {
+      display: inline-block;
+    }
+
+    .pagination a {
+      color: #333;
+      float: left;
+      padding: 8px 16px;
+      text-decoration: none;
+      transition: background-color 0.3s;
+      margin: 0 4px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .pagination a:hover {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    .pagination a.active {
+      background-color: #007BFF;
+      color: white;
+      border: 1px solid #007BFF;
+    }
+
+    @media screen and (max-width: 600px) {
+      .pagination a {
+        padding: 6px 12px;
+      }
+    }
+
         .extraContent {
             display: none;
             margin-top: 20px;
@@ -740,7 +781,7 @@
                 </article>
                 <!-- Continue com os outros artigos da mesma maneira -->
             </div>
-
+        
             <aside class="sidebar">
                 <div class="widget">
                     <h3 data-aos="fade-up">Sobre Nós</h3>
@@ -786,6 +827,18 @@
     
     </main>
 
+     <!-- Paginação -->       
+<div class="pagination-container">
+    <div class="pagination">
+      <a href="#" id="prev">&laquo;</a>
+      <a href="" class="page-num active">1</a>
+      <a href="#" class="page-num">2</a>
+      <a href="#" class="page-num">3</a>
+      <a href="#" class="page-num">4</a>
+      <a href="#" class="page-num">5</a>
+      <a href="#" id="next">&raquo;</a>
+    </div>
+  </div>
 
     <!-- Slide Infinito -->
 
@@ -997,6 +1050,44 @@
                 button.textContent = 'Saiba Mais';
             }
         }
+
+        //Paginação
+    const pages = document.querySelectorAll('.page-num');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    let currentPage = 0; // Índice da página ativa (começa em 0)
+
+    function updatePagination() {
+      // Remove a classe 'active' de todas as páginas
+      pages.forEach(page => page.classList.remove('active'));
+      // Adiciona a classe 'active' na página atual
+      pages[currentPage].classList.add('active');
+    }
+
+    // Evento do botão 'Avançar'
+    next.addEventListener('click', function() {
+      if (currentPage < pages.length - 1) {
+        currentPage++;
+        updatePagination();
+      }
+    });
+
+    // Evento do botão 'Voltar'
+    prev.addEventListener('click', function() {
+      if (currentPage > 0) {
+        currentPage--;
+        updatePagination();
+      }
+    });
+
+    // Evento para clicar diretamente nos números das páginas
+    pages.forEach((page, index) => {
+      page.addEventListener('click', function() {
+        currentPage = index;
+        updatePagination();
+      });
+    });
+
     </script>
     <script>AOS.init();</script>
 </body>
